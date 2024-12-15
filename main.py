@@ -1,5 +1,8 @@
 import discord
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # Intents aktivieren
 intents = discord.Intents.default()
