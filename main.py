@@ -292,9 +292,9 @@ async def verifizieren(
 
         # Entfernen der Rolle "Unverifiziert" sowie "Unverifiziert M|W"
         for role_name in roles_to_remove:
-            role = discord.utils.get(interaction.guild.roles, name=role_name)
-            if role and role in user.roles:
-                await user.remove_roles(role)
+            role_to_remove = discord.utils.get(interaction.guild.roles, name=role_name)
+            if role_to_remove and role_to_remove in user.roles:
+                await user.remove_roles(role_to_remove)
 
         await interaction.response.send_message(
             f"Die Rolle '{role}' wurde erfolgreich {user.mention} zugewiesen!")
