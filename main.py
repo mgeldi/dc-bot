@@ -359,7 +359,7 @@ async def ticket_add(interaction: discord.Interaction, user: discord.Member):  #
             read_message_history=True
         )
         await interaction.response.send_message(
-            f"{user.mention} wurde erfolgreich zu {channel.mention} hinzugefügt! Sie können jetzt auch die Nachrichtenhistorie sehen."
+            f"{user.mention} wurde erfolgreich zu {channel.mention} hinzugefügt!"
         )
     except discord.Forbidden:
         await interaction.response.send_message(
