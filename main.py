@@ -336,7 +336,6 @@ async def ticket_add(interaction: discord.Interaction, user: discord.Member):  #
     # Berechtigungen prüfen
     allowed_roles = ["Owner", "Admin", "Mod"]
     executor_roles = [role.name for role in interaction.user.roles]
-    
     if not any(role in allowed_roles for role in executor_roles):
         await interaction.response.send_message(
             "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
@@ -353,9 +352,14 @@ async def ticket_add(interaction: discord.Interaction, user: discord.Member):  #
 
     # Benutzer zu einem Kanal/Thread hinzufügen
     try:
-        await channel.set_permissions(user, read_messages=True, send_messages=True)
+        # Rechte setzen: Nachrichten lesen, senden und Historie einsehen
+        await channel.set_permissions(user, 
+            read_messages=True, 
+            send_messages=True, 
+            read_message_history=True
+        )
         await interaction.response.send_message(
-            f"{user.mention} wurde erfolgreich zu {channel.mention} hinzugefügt!"
+            f"{user.mention} wurde erfolgreich zu {channel.mention} hinzugefügt! Sie können jetzt auch die Nachrichtenhistorie sehen."
         )
     except discord.Forbidden:
         await interaction.response.send_message(
