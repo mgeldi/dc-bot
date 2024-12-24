@@ -332,7 +332,7 @@ async def role_autocomplete(interaction: discord.Interaction, current: str):
 
 # Slash Command zum Hinzufügen eines Nutzers zu einem Thread
 @tree.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
-async def ticket_add(interaction: discord.Interaction, user: discord.Member):
+async def ticket_add(interaction: discord.Interaction, user: str):  # Ändere den Typ zu str
     # Berechtigung des ausführenden Benutzers überprüfen
     executor_roles = [role.name for role in interaction.user.roles]
     allowed_roles = ["Owner", "Admin", "Mod"]
@@ -350,11 +350,19 @@ async def ticket_add(interaction: discord.Interaction, user: discord.Member):
         )
         return
 
+    # Benutzer anhand der übergebenen ID abrufen
+    member = interaction.guild.get_member(int(user))
+    if not member:
+        await interaction.response.send_message(
+            "Der Benutzer konnte nicht gefunden werden.", ephemeral=True
+        )
+        return
+
     # Benutzer zum Thread hinzufügen
     try:
-        await interaction.channel.add_user(user)
+        await interaction.channel.add_user(member)
         await interaction.response.send_message(
-            f"{user.mention} wurde erfolgreich zum Thread hinzugefügt!"
+            f"{member.mention} wurde erfolgreich zum Thread hinzugefügt!"
         )
     except discord.Forbidden:
         await interaction.response.send_message(
@@ -372,7 +380,7 @@ async def user_autocomplete(interaction: discord.Interaction, current: str):
         member for member in interaction.guild.members if current.lower() in member.name.lower()
     ]
     return [
-        discord.app_commands.Choice(name=member.name, value=member.id)
+        discord.app_commands.Choice(name=f"{member.name}#{member.discriminator}", value=str(member.id))
         for member in matching_users[:25]  # Maximal 25 Ergebnisse anzeigen
     ]
 
