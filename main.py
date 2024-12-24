@@ -330,6 +330,52 @@ async def role_autocomplete(interaction: discord.Interaction, current: str):
         for role in matching_roles
     ]
 
+# Slash Command zum Hinzufügen eines Nutzers zu einem Thread
+@tree.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
+async def ticket_add(interaction: discord.Interaction, user: discord.Member):
+    # Berechtigung des ausführenden Benutzers überprüfen
+    executor_roles = [role.name for role in interaction.user.roles]
+    allowed_roles = ["Owner", "Admin", "Mod"]
+
+    if not any(role in allowed_roles for role in executor_roles):
+        await interaction.response.send_message(
+            "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
+        )
+        return
+
+    # Überprüfen, ob der Channel ein Thread ist
+    if not isinstance(interaction.channel, discord.Thread):
+        await interaction.response.send_message(
+            "Dieser Befehl kann nur in einem Thread verwendet werden.", ephemeral=True
+        )
+        return
+
+    # Benutzer zum Thread hinzufügen
+    try:
+        await interaction.channel.add_user(user)
+        await interaction.response.send_message(
+            f"{user.mention} wurde erfolgreich zum Thread hinzugefügt!"
+        )
+    except discord.Forbidden:
+        await interaction.response.send_message(
+            "Ich habe nicht die Berechtigung, diesen Benutzer zum Thread hinzuzufügen.", ephemeral=True
+        )
+    except Exception as e:
+        await interaction.response.send_message(
+            f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
+        )
+
+# Autocomplete für den `user`-Parameter
+@ticket_add.autocomplete("user")
+async def user_autocomplete(interaction: discord.Interaction, current: str):
+    matching_users = [
+        member for member in interaction.guild.members if current.lower() in member.name.lower()
+    ]
+    return [
+        discord.app_commands.Choice(name=member.name, value=member.id)
+        for member in matching_users[:25]  # Maximal 25 Ergebnisse anzeigen
+    ]
+
 
 # Bot starten
 @bot.event
