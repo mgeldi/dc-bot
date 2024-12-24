@@ -230,7 +230,7 @@ async def setup_roles(interaction: discord.Interaction):
                               color=discord.Color.blue())
     embed_age.set_image(
         url=
-        "https://media.discordapp.net/attachments/1316082550493548614/1316141257457795122/Such_dir_ein_5.png?ex=675aa050&is=67594ed0&hm=c1d5eeec3757f4eca601911162a7e2b74c1fef95cae43add4fbcc63207ec7520&=&format=webp&quality=lossless&width=1031&height=515"
+        "https://media.discordapp.net/attachments/1316082550493548614/1320532982422835272/image-5.png?ex=676bebed&is=676a9a6d&hm=c3c3f21935d4969517c71d492272aa1619b0e2ec5e9c6c2b0f92f397bb6108fe&=&format=webp&quality=lossless&width=1440&height=808"
     )  # Thumbnail hinzufügen
     await interaction.channel.send(embed=embed_age, view=AgeDropdownView())
 
@@ -240,7 +240,7 @@ async def setup_roles(interaction: discord.Interaction):
         color=discord.Color.green())
     embed_city.set_image(
         url=
-        "https://media.discordapp.net/attachments/1316082550493548614/1316141944216490005/Such_dir_ein_6.png?ex=675aa0f4&is=67594f74&hm=7e204aa9d07d1e9ce3ce6096f0e013bd80cdd840adc20edf55fc6ac6943a49e5&=&format=webp&quality=lossless&width=2711&height=1355"
+        "https://media.discordapp.net/attachments/1316082550493548614/1320475707343896606/image.png?ex=676bb695&is=676a6515&hm=c19f2d2cfc26ea64014cb033af0d063f4c123169671da7d057b5ca5ffab6d49a&=&format=webp&quality=lossless&width=1440&height=810"
     )
     await interaction.channel.send(embed=embed_city, view=CityDropdownView())
 
@@ -249,7 +249,7 @@ async def setup_roles(interaction: discord.Interaction):
                                  color=discord.Color.purple())
     embed_school.set_image(
         url=
-        "https://media.discordapp.net/attachments/1316082550493548614/1316188331091951626/Such_dir_ein_2.png?ex=675a2367&is=6758d1e7&hm=4cfe4ad5bde3e325b09e5174d2f8ce8d0da432c873b299d42f825bf664c8cac5&=&format=webp&quality=lossless&width=1031&height=515"
+        "https://media.discordapp.net/attachments/1316082550493548614/1320532983148580864/image-4.png?ex=676bebed&is=676a9a6d&hm=0c614303d4812668315d296090abd00f8953721dc88420c1ad483057fb28be23&=&format=webp&quality=lossless&width=1440&height=808"
     )
     await interaction.channel.send(embed=embed_school,
                                    view=SchoolDropdownView())
