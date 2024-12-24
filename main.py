@@ -332,57 +332,50 @@ async def role_autocomplete(interaction: discord.Interaction, current: str):
 
 # Slash Command zum Hinzufügen eines Nutzers zu einem Thread
 @tree.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
-async def ticket_add(interaction: discord.Interaction, user: str):  # Ändere den Typ zu str
-    # Berechtigung des ausführenden Benutzers überprüfen
-    executor_roles = [role.name for role in interaction.user.roles]
+async def ticket_add(interaction: discord.Interaction, user: discord.Member):  # Ändere den Typ zu str
+    # Berechtigungen prüfen
     allowed_roles = ["Owner", "Admin", "Mod"]
-
+    executor_roles = [role.name for role in interaction.user.roles]
+    
     if not any(role in allowed_roles for role in executor_roles):
         await interaction.response.send_message(
             "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
         )
         return
 
-    # Überprüfen, ob der Channel ein Thread ist
-    if not isinstance(interaction.channel, discord.Thread):
+    # Kanal prüfen
+    channel = interaction.channel
+    if not isinstance(channel, (discord.TextChannel, discord.Thread)):
         await interaction.response.send_message(
-            "Dieser Befehl kann nur in einem Thread verwendet werden.", ephemeral=True
+            "Dieser Befehl kann nur in Textkanälen oder Threads verwendet werden.", ephemeral=True
         )
         return
 
-    # Benutzer anhand der übergebenen ID abrufen
-    member = interaction.guild.get_member(int(user))
-    if not member:
-        await interaction.response.send_message(
-            "Der Benutzer konnte nicht gefunden werden.", ephemeral=True
-        )
-        return
-
-    # Benutzer zum Thread hinzufügen
+    # Benutzer zu einem Kanal/Thread hinzufügen
     try:
-        await interaction.channel.add_user(member)
+        await channel.set_permissions(user, read_messages=True, send_messages=True)
         await interaction.response.send_message(
-            f"{member.mention} wurde erfolgreich zum Thread hinzugefügt!"
+            f"{user.mention} wurde erfolgreich zu {channel.mention} hinzugefügt!"
         )
     except discord.Forbidden:
         await interaction.response.send_message(
-            "Ich habe nicht die Berechtigung, diesen Benutzer zum Thread hinzuzufügen.", ephemeral=True
+            "Ich habe nicht die Berechtigung, diesen Benutzer hinzuzufügen.", ephemeral=True
         )
     except Exception as e:
         await interaction.response.send_message(
             f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
         )
 
-# Autocomplete für den `user`-Parameter
-@ticket_add.autocomplete("user")
-async def user_autocomplete(interaction: discord.Interaction, current: str):
-    matching_users = [
-        member for member in interaction.guild.members if current.lower() in member.name.lower()
-    ]
-    return [
-        discord.app_commands.Choice(name=f"{member.name}#{member.discriminator}", value=str(member.id))
-        for member in matching_users[:25]  # Maximal 25 Ergebnisse anzeigen
-    ]
+# # Autocomplete für den `user`-Parameter
+# @ticket_add.autocomplete("user")
+# async def user_autocomplete(interaction: discord.Interaction, current: str):
+#     matching_users = [
+#         member for member in interaction.guild.members if current.lower() in member.name.lower()
+#     ]
+#     return [
+#         discord.app_commands.Choice(name=f"{member.name}#{member.discriminator}", value=str(member.id))
+#         for member in matching_users[:25]  # Maximal 25 Ergebnisse anzeigen
+#     ]
 
 
 # Bot starten
