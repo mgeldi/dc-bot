@@ -35,6 +35,14 @@ async def remove_roles_in_category(user, category_roles, guild):
     if roles_to_remove:
         await user.remove_roles(*roles_to_remove)
 
+def update_dropdown_options(selected_value, options):
+    """
+    Aktualisiert die Dropdown-Optionen, sodass nur die ausgewählte Option als 'ausgewählt' markiert wird.
+    """
+    for option in options:
+        option.default = (option.value == selected_value)
+    return options
+
 
 # Dropdown-Menü für Altersgruppen
 class AgeDropdown(discord.ui.Select):
@@ -66,12 +74,18 @@ class AgeDropdown(discord.ui.Select):
                 ephemeral=True)
             return
 
-        # Entfernen anderer Altersrollen und Hinzufügen der neuen Rolle
+        # Entfernen anderer Altersgruppenrollen und Hinzufügen der neuen Rolle
         await remove_roles_in_category(interaction.user, AGE_ROLES, guild)
         await interaction.user.add_roles(selected_role)
-        await interaction.response.send_message(
-            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Altersrollen wurden entfernt.",
-            ephemeral=True)
+
+        # Aktualisieren der Dropdown-Optionen
+        self.options = update_dropdown_options(selected_role_name, self.options)
+
+        await interaction.response.edit_message(
+            content=f"Du hast die Rolle **{selected_role_name}** erhalten.",
+            view=self.view  # Aktualisiert die Ansicht
+        )
+
 
 
 class AgeDropdownView(discord.ui.View):
@@ -166,10 +180,14 @@ class CityDropdown(discord.ui.Select):
         # Entfernen anderer Städte-Rollen und Hinzufügen der neuen Rolle
         await remove_roles_in_category(interaction.user, CITY_ROLES, guild)
         await interaction.user.add_roles(selected_role)
-        await interaction.response.send_message(
-            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Städte-Rollen wurden entfernt.",
-            ephemeral=True)
 
+        # Aktualisieren der Dropdown-Optionen
+        self.options = update_dropdown_options(selected_role_name, self.options)
+
+        await interaction.response.edit_message(
+            content=f"Du hast die Rolle **{selected_role_name}** erhalten.",
+            view=self.view  # Aktualisiert die Ansicht
+        )
 
 class CityDropdownView(discord.ui.View):
 
@@ -204,12 +222,17 @@ class SchoolDropdown(discord.ui.Select):
                 ephemeral=True)
             return
 
-        # Entfernen anderer Schul-Rollen und Hinzufügen der neuen Rolle
+        # Entfernen anderer Rechtsschulenrollen und Hinzufügen der neuen Rolle
         await remove_roles_in_category(interaction.user, SCHOOL_ROLES, guild)
         await interaction.user.add_roles(selected_role)
-        await interaction.response.send_message(
-            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Rechtsschulen-Rollen wurden entfernt.",
-            ephemeral=True)
+
+        # Aktualisieren der Dropdown-Optionen
+        self.options = update_dropdown_options(selected_role_name, self.options)
+
+        await interaction.response.edit_message(
+            content=f"Du hast die Rolle **{selected_role_name}** erhalten.",
+            view=self.view  # Aktualisiert die Ansicht
+        )
 
 
 class SchoolDropdownView(discord.ui.View):
