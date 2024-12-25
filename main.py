@@ -23,7 +23,7 @@ CITY_ROLES = [
     "Oberösterreich", "Niederösterreich", "Waadt", "Aargau", "Zürich", "Bern",
     "Graubünden"
 ]
-SCHOOL_ROLES = ["Hanbali", "Shafi'i", "Maliki", "Hanafi"]
+SCHOOL_ROLES = ["Hanafi", "Hanbali", "Maliki", "Shafi'i"]
 persistent_views = []  # Liste zum Speichern von Views für die Persistenz
 
 
@@ -81,9 +81,10 @@ class AgeDropdown(discord.ui.Select):
         # Aktualisieren der Dropdown-Optionen
         self.options = update_dropdown_options(selected_role_name, self.options)
 
-        await interaction.response.edit_message(
-            content=f"Du hast die Rolle **{selected_role_name}** erhalten.",
-            view=self.view  # Aktualisiert die Ansicht
+        # Senden einer ephemeral Nachricht an den Benutzer
+        await interaction.response.send_message(
+            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Altersgruppen-Rollen wurden entfernt.",
+            ephemeral=True
         )
 
 
@@ -184,9 +185,10 @@ class CityDropdown(discord.ui.Select):
         # Aktualisieren der Dropdown-Optionen
         self.options = update_dropdown_options(selected_role_name, self.options)
 
-        await interaction.response.edit_message(
-            content=f"Du hast die Rolle **{selected_role_name}** erhalten.",
-            view=self.view  # Aktualisiert die Ansicht
+        # Senden einer ephemeral Nachricht an den Benutzer
+        await interaction.response.send_message(
+            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Städte-Rollen wurden entfernt.",
+            ephemeral=True
         )
 
 class CityDropdownView(discord.ui.View):
@@ -200,10 +202,23 @@ class CityDropdownView(discord.ui.View):
 class SchoolDropdown(discord.ui.Select):
 
     def __init__(self):
+        # Mapping der Rollen zu Emojis
+        school_emojis = {
+            "Hanafi": "📕",
+            "Maliki": "📗",
+            "Shafi'i": "📘",
+            "Hanbali": "📙",
+        }
+
+        # Optionen mit Emojis erstellen
         options = [
-            discord.SelectOption(label=school, value=school)
-            for school in SCHOOL_ROLES
+            discord.SelectOption(
+                label=school,
+                value=school,
+                emoji=school_emojis.get(school, "📖")  # Standard-Emoji, falls keine Zuordnung existiert
+            ) for school in SCHOOL_ROLES
         ]
+
         super().__init__(placeholder="Wähle deine Rechtsschule aus",
                          min_values=1,
                          max_values=1,
@@ -222,17 +237,22 @@ class SchoolDropdown(discord.ui.Select):
                 ephemeral=True)
             return
 
-        # Entfernen anderer Rechtsschulenrollen und Hinzufügen der neuen Rolle
-        await remove_roles_in_category(interaction.user, SCHOOL_ROLES, guild)
+        # Entfernen anderer Schul-Rollen und Hinzufügen der neuen Rolle
+        current_roles = interaction.user.roles
+        school_roles = [
+            discord.utils.get(guild.roles, name=school) for school in SCHOOL_ROLES
+        ]
+        school_roles = [role for role in school_roles if role is not None]  # Nur existierende Rollen
+
+        for role in school_roles:
+            if role in current_roles and role != selected_role:
+                await interaction.user.remove_roles(role)
+
         await interaction.user.add_roles(selected_role)
 
-        # Aktualisieren der Dropdown-Optionen
-        self.options = update_dropdown_options(selected_role_name, self.options)
-
-        await interaction.response.edit_message(
-            content=f"Du hast die Rolle **{selected_role_name}** erhalten.",
-            view=self.view  # Aktualisiert die Ansicht
-        )
+        await interaction.response.send_message(
+            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Rechtsschulen-Rollen wurden entfernt.",
+            ephemeral=True)
 
 
 class SchoolDropdownView(discord.ui.View):
@@ -245,61 +265,57 @@ class BildungsrollenDropdown(discord.ui.Select):
 
     def __init__(self):
         options = [
-            discord.SelectOption(label="Quran",
-                                 value="Quran",
-                                 emoji="🕋"),
-            discord.SelectOption(label="Unterrichte",
-                                 value="Unterrichte",
-                                 emoji="🖋️"),
-            discord.SelectOption(label="Buchvorlesungen",
-                                 value="Buchvorlesungen",
-                                 emoji="📖"),
-            discord.SelectOption(label="Vorträge",
-                                 value="Vorträge",
-                                 emoji="📚"),
-            discord.SelectOption(label="Podcasts",
-                                 value="Podcasts",
-                                 emoji="🎙️"),
+            discord.SelectOption(label="Quran", value="Quran", emoji="🕋"),
+            discord.SelectOption(label="Unterrichte", value="Unterrichte", emoji="🖋️"),
+            discord.SelectOption(label="Buchvorlesungen", value="Buchvorlesungen", emoji="📖"),
+            discord.SelectOption(label="Vorträge", value="Vorträge", emoji="📚"),
+            discord.SelectOption(label="Podcasts", value="Podcasts", emoji="🎙️"),
         ]
-        super().__init__(placeholder="Wähle deine islamischen Bildungsrollen aus",
+        super().__init__(placeholder="Wähle deine Bildungsrollen aus",
                          min_values=1,
                          max_values=len(options),
                          options=options,
                          custom_id="bildungsrollen_dropdown")
 
     async def callback(self, interaction: discord.Interaction):
-        selected_roles_names = self.values
         guild = interaction.guild
+        user_roles = interaction.user.roles
 
-        added_roles = []
-        removed_roles = []
+        # Rollen, die durch das Dropdown repräsentiert werden
+        valid_roles = [discord.utils.get(guild.roles, name=option.value) for option in self.options]
+        valid_roles = [role for role in valid_roles if role is not None]  # Nur existierende Rollen
 
-        for role_name in selected_roles_names:
-            role = discord.utils.get(guild.roles, name=role_name)
-            if not role:
-                await interaction.response.send_message(
-                    f"Die Rolle **{role_name}** existiert nicht.",
-                    ephemeral=True
-                )
-                return
-            
-            if role in interaction.user.roles:
-                # Rolle entfernen, wenn sie bereits zugewiesen ist
-                await interaction.user.remove_roles(role)
-                removed_roles.append(role.name)
-            else:
-                # Rolle hinzufügen, wenn sie nicht zugewiesen ist
-                await interaction.user.add_roles(role)
-                added_roles.append(role.name)
+        # Rollen, die der Benutzer derzeit hat und in diesem Dropdown enthalten sind
+        current_roles = set(role for role in user_roles if role in valid_roles)
 
-        # Rückmeldung für den Nutzer
-        message = "Deine Rollen wurden aktualisiert:\n"
-        if added_roles:
-            message += f"✅ Hinzugefügt: {', '.join(added_roles)}\n"
-        if removed_roles:
-            message += f"❌ Entfernt: {', '.join(removed_roles)}\n"
-        
-        await interaction.response.send_message(message, ephemeral=True)
+        # Rollen, die in der aktuellen Auswahl sind
+        selected_roles = set(discord.utils.get(guild.roles, name=value) for value in self.values)
+
+        # Rollen, die hinzugefügt oder entfernt werden sollen
+        roles_to_add = selected_roles - current_roles
+        roles_to_remove = current_roles - selected_roles
+
+        # Änderungen anwenden
+        if roles_to_add:
+            await interaction.user.add_roles(*roles_to_add)
+        if roles_to_remove:
+            await interaction.user.remove_roles(*roles_to_remove)
+
+        # Nachricht für den Benutzer
+        added_roles = ", ".join([role.name for role in roles_to_add])
+        removed_roles = ", ".join([role.name for role in roles_to_remove])
+
+        response_message = "Deine Rollen wurden aktualisiert:\n"
+        if roles_to_add:
+            response_message += f"✅ Hinzugefügt: {added_roles}\n"
+        if roles_to_remove:
+            response_message += f"❌ Entfernt: {removed_roles}\n"
+
+        if not roles_to_add and not roles_to_remove:
+            response_message = "Keine Änderungen vorgenommen."
+
+        await interaction.response.send_message(response_message, ephemeral=True)
+
 
 class BildungsrollenDropdownView(discord.ui.View):
 
