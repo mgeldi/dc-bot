@@ -429,7 +429,7 @@ class VerificationButtons(discord.ui.View):
                     child.disabled = True
             await interaction.message.edit(view=self)
 
-    @discord.ui.button(label="Muslim", style=discord.ButtonStyle.blurple, custom_id="muslim_button")
+    @discord.ui.button(label="♂️Muslim", style=discord.ButtonStyle.blurple, custom_id="muslim_button")
     async def muslim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslim = discord.utils.get(interaction.guild.roles, name="Unverifiziert M")
@@ -448,7 +448,7 @@ class VerificationButtons(discord.ui.View):
         else:
             await interaction.response.send_message("Du hast bereits dein Geschlecht ausgewählt. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
 
-    @discord.ui.button(label="Muslima", style=discord.ButtonStyle.red, custom_id="muslima_button")
+    @discord.ui.button(label="♀️Muslima", style=discord.ButtonStyle.red, custom_id="muslima_button")
     async def muslima_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslima = discord.utils.get(interaction.guild.roles, name="Unverifiziert W")
@@ -470,7 +470,7 @@ class VerificationButtons(discord.ui.View):
     async def interest_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_interessiert = discord.utils.get(interaction.guild.roles, name="Interessiert")
-        
+
         if role_unverifiziert in interaction.user.roles:
             category = interaction.guild.get_channel(1314116985499553812)  # Kategorie-ID
             overwrites = {
