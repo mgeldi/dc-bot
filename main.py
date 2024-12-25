@@ -530,42 +530,26 @@ class VerificationButtons(discord.ui.View):
     async def interest_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_interessiert = discord.utils.get(interaction.guild.roles, name="Interessiert")
-        category = interaction.guild.get_channel(1314116985499553812)  # Kategorie-ID für Interessierte
-        role_sonstige = discord.utils.get(interaction.guild.roles, name="Sonstige")
+        # Der Channel, in dem der Benutzer fortfahren soll
+        channel = interaction.guild.get_channel(1314117160465076264)
 
         if role_unverifiziert in interaction.user.roles:
+            # Rolle "Interessiert" hinzufügen und "Unverifiziert" entfernen
             await interaction.user.add_roles(role_interessiert)
             await interaction.user.remove_roles(role_unverifiziert)
 
-            # Erstellen eines neuen Channels
-            new_channel = await category.create_text_channel(
-                name=f"dawah-{interaction.user.name}",
-                overwrites={
-                    interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-                    interaction.user: discord.PermissionOverwrite(read_messages=True, send_messages=True),
-                    role_sonstige: discord.PermissionOverwrite(read_messages=True, send_messages=True),
-                    discord.utils.get(interaction.guild.roles, name="Owner"): discord.PermissionOverwrite(read_messages=True, send_messages=True),
-                    discord.utils.get(interaction.guild.roles, name="Admin"): discord.PermissionOverwrite(read_messages=True, send_messages=True)
-                }
-            )
-
-            # Begrüßungsnachricht
-            await new_channel.send(
-                f"""Willkommen {interaction.user.mention},
-
-unsere Ansprechpartner ({role_sonstige.mention}) werden sich bald bei dir melden! 
-Wenn du Fragen oder Gedanken hast, kannst du sie gerne hier teilen. 
-Wir freuen uns, mit dir ins Gespräch zu kommen!"""
-            )
-
-            # Ephemeral-Message zur Bestätigung
+            # Ephemeral-Nachricht zur Bestätigung und Hinweis auf den Channel
             await interaction.response.send_message(
-                f"Ein neuer Channel wurde für dich erstellt: {new_channel.mention}. Bitte fahre dort fort.", ephemeral=True
+                f"Du hast jetzt die Rolle 'Interessiert'. Bitte fahre im {channel.mention} fort, um mit den nächsten Schritten fortzufahren.",
+                ephemeral=True
             )
 
+            # Falls gewünscht, kannst du hier zusätzliche Logik einfügen,
+            # um Buttons zu deaktivieren oder den Status des Benutzers zu aktualisieren.
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
             await interaction.response.send_message("Du bist bereits verifiziert oder hast dich bereits gemeldet.", ephemeral=True)
+
 
 
 
