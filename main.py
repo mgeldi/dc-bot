@@ -446,7 +446,7 @@ class VerificationButtons(discord.ui.View):
         else:
             await interaction.response.send_message("Du bist bereits verifiziert.", ephemeral=True)
 
-    @discord.ui.button(label="Muslima", style=discord.ButtonStyle.pink, custom_id="muslima_button")
+    @discord.ui.button(label="Muslima", style=discord.ButtonStyle.red, custom_id="muslima_button")
     async def muslima_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslima = discord.utils.get(interaction.guild.roles, name="Unverifiziert W")
@@ -486,7 +486,6 @@ class VerificationButtons(discord.ui.View):
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
             await interaction.response.send_message("Du bist bereits verifiziert.", ephemeral=True)
-
 
 
 # Setup-Verification-Befehl
