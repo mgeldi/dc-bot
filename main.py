@@ -254,6 +254,52 @@ async def setup_roles(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed_school,
                                    view=SchoolDropdownView())
 
+# Dropdown-Menü für Städte
+# class BildungsrollenDropdown(discord.ui.Select):
+
+#     def __init__(self):
+#         options = [
+#             discord.SelectOption(label="Quran",
+#                                  value="Quran",
+#                                  emoji="🕋"),
+#             discord.SelectOption(label="Unterrichte",
+#                                  value="Unterrichte",
+#                                  emoji="🖋️"),
+#             discord.SelectOption(label="Buchvorlesungen",
+#                                  value="Buchvorlesungen",
+#                                  emoji="📖"),
+#             discord.SelectOption(label="Vorträge",
+#                                  value="Vorträge",
+#                                  emoji="📚"),
+#             discord.SelectOption(label="Podcasts",
+#                                  value="Podcasts",
+#                                  emoji="🎙️"),
+#         ]
+#         super().__init__(placeholder="Wähle deine Bildungsrollen aus",
+#                          min_values=1,
+#                          max_values=1,
+#                          options=options,
+#                          custom_id="bildungsrollen_dropdown")
+
+#     async def callback(self, interaction: discord.Interaction):
+#         selected_role_name = self.values[0]
+#         guild = interaction.guild
+
+#         # Überprüfen, ob die Rolle existiert
+#         selected_role = discord.utils.get(guild.roles, name=selected_role_name)
+#         if selected_role is None:
+#             await interaction.response.send_message(
+#                 f"Die Rolle **{selected_role_name}** existiert nicht.",
+#                 ephemeral=True)
+#             return
+
+#         # Entfernen anderer Städte-Rollen und Hinzufügen der neuen Rolle
+#         await remove_roles_in_category(interaction.user, CITY_ROLES, guild)
+#         await interaction.user.add_roles(selected_role)
+#         await interaction.response.send_message(
+#             f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Städte-Rollen wurden entfernt.",
+#             ephemeral=True)
+
 
 # Slash Command definieren
 @tree.command(name="verifizieren",
@@ -370,16 +416,146 @@ async def ticket_add(interaction: discord.Interaction, user: discord.Member):  #
             f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
         )
 
-# # Autocomplete für den `user`-Parameter
-# @ticket_add.autocomplete("user")
-# async def user_autocomplete(interaction: discord.Interaction, current: str):
-#     matching_users = [
-#         member for member in interaction.guild.members if current.lower() in member.name.lower()
-#     ]
-#     return [
-#         discord.app_commands.Choice(name=f"{member.name}#{member.discriminator}", value=str(member.id))
-#         for member in matching_users[:25]  # Maximal 25 Ergebnisse anzeigen
-#     ]
+class VerificationButtons(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)  # Persistente View
+
+    async def notify_admins(self, guild: discord.Guild, error_message: str):
+        """Benachrichtigt Owner und Server Architekt bei kritischen Fehlern."""
+        roles_to_notify = [
+            discord.utils.get(guild.roles, name="Owner"),
+            discord.utils.get(guild.roles, name="Server Architekt")
+        ]
+        mentions = " ".join(role.mention for role in roles_to_notify if role is not None)
+        if mentions:
+            return f"{mentions} Es ist ein kritischer Fehler aufgetreten: {error_message}"
+        return f"Es ist ein kritischer Fehler aufgetreten, aber keine Admin-Rollen konnten gefunden werden: {error_message}"
+
+    async def disable_buttons_for_user(self, interaction: discord.Interaction):
+        """Deaktiviert Buttons nur für den Benutzer, der geklickt hat."""
+        for child in self.children:
+            if isinstance(child, discord.ui.Button):
+                child.disabled = True
+        await interaction.message.edit(view=self)
+
+    @discord.ui.button(label="Muslim", style=discord.ButtonStyle.blurple, custom_id="verify_muslim")
+    async def muslim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        guild = interaction.guild
+        user = interaction.user
+
+        # Rollen festlegen
+        role_unverifiziert = discord.utils.get(guild.roles, name="Unverifiziert")
+        role_unverifiziert_m = discord.utils.get(guild.roles, name="Unverifiziert M")
+        target_channel = discord.utils.get(guild.channels, id=1314112301162430464)
+
+        if role_unverifiziert_m is None or target_channel is None:
+            error_message = (
+                "Die benötigten Rollen ('Unverifiziert M') oder der Channel ('1314112301162430464') existieren nicht."
+            )
+            notify_message = await self.notify_admins(guild, error_message)
+            await interaction.response.send_message(notify_message, ephemeral=True)
+            return
+
+        # Rollen zuweisen und entfernen
+        await user.add_roles(role_unverifiziert_m)
+        if role_unverifiziert:
+            await user.remove_roles(role_unverifiziert)
+
+        # Weiterleitung und Buttons deaktivieren
+        await interaction.response.send_message(
+            f"Du hast die Rolle 'Unverifiziert M' erhalten! Bitte fahre hier fort: {target_channel.mention}",
+            ephemeral=True
+        )
+        await self.disable_buttons_for_user(interaction)
+
+    @discord.ui.button(label="Muslima", style=discord.ButtonStyle.danger, custom_id="verify_muslima")
+    async def muslima_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        guild = interaction.guild
+        user = interaction.user
+
+        # Rollen festlegen
+        role_unverifiziert = discord.utils.get(guild.roles, name="Unverifiziert")
+        role_unverifiziert_w = discord.utils.get(guild.roles, name="Unverifiziert W")
+        target_channel = discord.utils.get(guild.channels, id=1314112392594194482)
+
+        if role_unverifiziert_w is None or target_channel is None:
+            error_message = (
+                "Die benötigten Rollen ('Unverifiziert W') oder der Channel ('1314112392594194482') existieren nicht."
+            )
+            notify_message = await self.notify_admins(guild, error_message)
+            await interaction.response.send_message(notify_message, ephemeral=True)
+            return
+
+        # Rollen zuweisen und entfernen
+        await user.add_roles(role_unverifiziert_w)
+        if role_unverifiziert:
+            await user.remove_roles(role_unverifiziert)
+
+        # Weiterleitung und Buttons deaktivieren
+        await interaction.response.send_message(
+            f"Du hast die Rolle 'Unverifiziert W' erhalten! Bitte fahre hier fort: {target_channel.mention}",
+            ephemeral=True
+        )
+        await self.disable_buttons_for_user(interaction)
+
+    @discord.ui.button(label="Ich habe Interesse am Islam", style=discord.ButtonStyle.green, custom_id="verify_interest")
+    async def interest_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        guild = interaction.guild
+        user = interaction.user
+
+        # Kategorie finden
+        category = discord.utils.get(guild.categories, id=1314116985499553812)
+        if category is None:
+            error_message = "Die Kategorie für Dawah ('1314116985499553812') existiert nicht."
+            notify_message = await self.notify_admins(guild, error_message)
+            await interaction.response.send_message(notify_message, ephemeral=True)
+            return
+
+        # Kanal erstellen
+        channel_name = f"dawah-{user.name}"
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            user: discord.PermissionOverwrite(read_messages=True, send_messages=True),
+            discord.utils.get(guild.roles, name="Owner"): discord.PermissionOverwrite(read_messages=True),
+            discord.utils.get(guild.roles, name="Admin"): discord.PermissionOverwrite(read_messages=True),
+            discord.utils.get(guild.roles, name="Sonstige"): discord.PermissionOverwrite(read_messages=True),
+        }
+
+        try:
+            new_channel = await guild.create_text_channel(
+                name=channel_name,
+                category=category,
+                overwrites=overwrites
+            )
+            await interaction.response.send_message(
+                f"Ein neuer Kanal wurde für dich erstellt: {new_channel.mention}", ephemeral=True)
+            await self.disable_buttons_for_user(interaction)
+        except Exception as e:
+            error_message = f"Fehler beim Erstellen des Dawah-Kanals: {e}"
+            notify_message = await self.notify_admins(guild, error_message)
+            await interaction.response.send_message(notify_message, ephemeral=True)
+
+
+# Setup-Verification-Befehl
+@tree.command(name="setup_verification", description="Richtet die Verifizierung mit Buttons ein.")
+async def setup_verification(interaction: discord.Interaction):
+    # Embed für Verifizierungstext
+    embed = discord.Embed(
+        title="🔒 Verifizierung",
+        description=(
+            "Bitte wähle zur Verifizierung:\n\n"
+            "Bist du Muslim oder Muslima❓\n"
+            "Dann wähle dein Geschlecht aus.\n\n"
+            "Ansonsten:\n"
+            "Hast du Interesse am Islam❓\n\n"
+            "Klicke einfach auf den entsprechenden Button, um fortzufahren❗"
+        ),
+        color=discord.Color.blue()
+    )
+
+    # Nachricht mit Buttons senden
+    await interaction.channel.send(embed=embed, view=VerificationButtons())
+    await interaction.response.send_message("Verifizierung wurde eingerichtet!", ephemeral=True)
 
 
 # Bot starten
