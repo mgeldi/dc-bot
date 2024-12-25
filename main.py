@@ -218,6 +218,72 @@ class SchoolDropdownView(discord.ui.View):
         super().__init__(timeout=None)  # Persistente View
         self.add_item(SchoolDropdown())
 
+class BildungsrollenDropdown(discord.ui.Select):
+
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="Quran",
+                                 value="Quran",
+                                 emoji="🕋"),
+            discord.SelectOption(label="Unterrichte",
+                                 value="Unterrichte",
+                                 emoji="🖋️"),
+            discord.SelectOption(label="Buchvorlesungen",
+                                 value="Buchvorlesungen",
+                                 emoji="📖"),
+            discord.SelectOption(label="Vorträge",
+                                 value="Vorträge",
+                                 emoji="📚"),
+            discord.SelectOption(label="Podcasts",
+                                 value="Podcasts",
+                                 emoji="🎙️"),
+        ]
+        super().__init__(placeholder="Wähle deine islamischen Bildungsrollen aus",
+                         min_values=1,
+                         max_values=len(options),
+                         options=options,
+                         custom_id="bildungsrollen_dropdown")
+
+    async def callback(self, interaction: discord.Interaction):
+        selected_roles_names = self.values
+        guild = interaction.guild
+
+        added_roles = []
+        removed_roles = []
+
+        for role_name in selected_roles_names:
+            role = discord.utils.get(guild.roles, name=role_name)
+            if not role:
+                await interaction.response.send_message(
+                    f"Die Rolle **{role_name}** existiert nicht.",
+                    ephemeral=True
+                )
+                return
+            
+            if role in interaction.user.roles:
+                # Rolle entfernen, wenn sie bereits zugewiesen ist
+                await interaction.user.remove_roles(role)
+                removed_roles.append(role.name)
+            else:
+                # Rolle hinzufügen, wenn sie nicht zugewiesen ist
+                await interaction.user.add_roles(role)
+                added_roles.append(role.name)
+
+        # Rückmeldung für den Nutzer
+        message = "Deine Rollen wurden aktualisiert:\n"
+        if added_roles:
+            message += f"✅ Hinzugefügt: {', '.join(added_roles)}\n"
+        if removed_roles:
+            message += f"❌ Entfernt: {', '.join(removed_roles)}\n"
+        
+        await interaction.response.send_message(message, ephemeral=True)
+
+class BildungsrollenDropdownView(discord.ui.View):
+
+    def __init__(self):
+        super().__init__(timeout=None)  # Persistente View
+        self.add_item(BildungsrollenDropdown())
+
 
 # Slash Command zum Posten der Dropdown-Menüs
 @tree.command(name="setup_roles",
@@ -246,7 +312,7 @@ async def setup_roles(interaction: discord.Interaction):
 
     # Rechtsschulen
     embed_school = discord.Embed(title="📚 Wähle deine Rechtsschule",
-                                 color=discord.Color.purple())
+                                 color=discord.Color.gold())
     embed_school.set_image(
         url=
         "https://media.discordapp.net/attachments/1316082550493548614/1320532983148580864/image-4.png?ex=676bebed&is=676a9a6d&hm=0c614303d4812668315d296090abd00f8953721dc88420c1ad483057fb28be23&=&format=webp&quality=lossless&width=1440&height=808"
@@ -254,51 +320,15 @@ async def setup_roles(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed_school,
                                    view=SchoolDropdownView())
 
-# Dropdown-Menü für Städte
-# class BildungsrollenDropdown(discord.ui.Select):
-
-#     def __init__(self):
-#         options = [
-#             discord.SelectOption(label="Quran",
-#                                  value="Quran",
-#                                  emoji="🕋"),
-#             discord.SelectOption(label="Unterrichte",
-#                                  value="Unterrichte",
-#                                  emoji="🖋️"),
-#             discord.SelectOption(label="Buchvorlesungen",
-#                                  value="Buchvorlesungen",
-#                                  emoji="📖"),
-#             discord.SelectOption(label="Vorträge",
-#                                  value="Vorträge",
-#                                  emoji="📚"),
-#             discord.SelectOption(label="Podcasts",
-#                                  value="Podcasts",
-#                                  emoji="🎙️"),
-#         ]
-#         super().__init__(placeholder="Wähle deine Bildungsrollen aus",
-#                          min_values=1,
-#                          max_values=1,
-#                          options=options,
-#                          custom_id="bildungsrollen_dropdown")
-
-#     async def callback(self, interaction: discord.Interaction):
-#         selected_role_name = self.values[0]
-#         guild = interaction.guild
-
-#         # Überprüfen, ob die Rolle existiert
-#         selected_role = discord.utils.get(guild.roles, name=selected_role_name)
-#         if selected_role is None:
-#             await interaction.response.send_message(
-#                 f"Die Rolle **{selected_role_name}** existiert nicht.",
-#                 ephemeral=True)
-#             return
-
-#         # Entfernen anderer Städte-Rollen und Hinzufügen der neuen Rolle
-#         await remove_roles_in_category(interaction.user, CITY_ROLES, guild)
-#         await interaction.user.add_roles(selected_role)
-#         await interaction.response.send_message(
-#             f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Städte-Rollen wurden entfernt.",
-#             ephemeral=True)
+    # Bildungsrollen
+    embed_school = discord.Embed(title="📚 Wähle deine islamischen Bildungsrollen",
+                                 color=discord.Color.teal())
+    embed_school.set_image(
+        url=
+        "https://media.discordapp.net/attachments/1316082550493548614/1321257663987716156/image.png?ex=676d3d56&is=676bebd6&hm=f0963f170dd25231a2ca725c3d87cd9481870d8c42522f4a07c5024ea9af5e15&=&format=webp&quality=lossless&width=1443&height=813"
+    )
+    await interaction.channel.send(embed=embed_school,
+                                   view=BildungsrollenDropdownView())
 
 
 # Slash Command definieren
@@ -429,7 +459,7 @@ class VerificationButtons(discord.ui.View):
                     child.disabled = True
             await interaction.message.edit(view=self)
 
-    @discord.ui.button(label="♂️Muslim", style=discord.ButtonStyle.blurple, custom_id="muslim_button")
+    @discord.ui.button(label="♂️ Muslim", style=discord.ButtonStyle.blurple, custom_id="muslim_button")
     async def muslim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslim = discord.utils.get(interaction.guild.roles, name="Unverifiziert M")
@@ -448,7 +478,7 @@ class VerificationButtons(discord.ui.View):
         else:
             await interaction.response.send_message("Du hast bereits dein Geschlecht ausgewählt. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
 
-    @discord.ui.button(label="♀️Muslima", style=discord.ButtonStyle.red, custom_id="muslima_button")
+    @discord.ui.button(label="♀️ Muslima", style=discord.ButtonStyle.red, custom_id="muslima_button")
     async def muslima_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslima = discord.utils.get(interaction.guild.roles, name="Unverifiziert W")
