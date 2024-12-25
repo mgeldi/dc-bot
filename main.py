@@ -496,7 +496,7 @@ class VerificationButtons(discord.ui.View):
         else:
             await interaction.response.send_message("Du hast bereits dein Geschlecht ausgewählt. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
 
-    @discord.ui.button(label="Ich habe Interesse am Islam", style=discord.ButtonStyle.green, custom_id="interest_button")
+    @discord.ui.button(label="📩 Ich habe Interesse am Islam", style=discord.ButtonStyle.green, custom_id="interest_button")
     async def interest_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_interessiert = discord.utils.get(interaction.guild.roles, name="Interessiert")
