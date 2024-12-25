@@ -322,7 +322,7 @@ async def setup_roles(interaction: discord.Interaction):
 
     # Bildungsrollen
     embed_school = discord.Embed(title="📚 Wähle deine islamischen Bildungsrollen",
-                                 color=discord.Color.teal())
+                                 color=discord.Color.red())
     embed_school.set_image(
         url=
         "https://media.discordapp.net/attachments/1316082550493548614/1321257663987716156/image.png?ex=676d3d56&is=676bebd6&hm=f0963f170dd25231a2ca725c3d87cd9481870d8c42522f4a07c5024ea9af5e15&=&format=webp&quality=lossless&width=1443&height=813"
