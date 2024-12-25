@@ -493,9 +493,9 @@ class VerificationButtons(discord.ui.View):
             await new_channel.send(
                 f"""Willkommen {interaction.user.mention},
 
-    unsere Ansprechpartner {role_sonstige.mention} werden sich bald bei dir melden! 
-    Wenn du Fragen oder Gedanken hast, kannst du sie gerne hier teilen. 
-    Wir freuen uns, mit dir ins Gespräch zu kommen!"""
+unsere Ansprechpartner ({role_sonstige.mention}) werden sich bald bei dir melden! 
+Wenn du Fragen oder Gedanken hast, kannst du sie gerne hier teilen. 
+Wir freuen uns, mit dir ins Gespräch zu kommen!"""
             )
 
             # Ephemeral-Message zur Bestätigung
