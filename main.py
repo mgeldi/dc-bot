@@ -196,9 +196,9 @@ class SchoolDropdown(discord.ui.Select):
         # Mapping der Rollen zu Emojis
         school_emojis = {
             "Hanafi": "📕",
-            "Maliki": "📗",
-            "Shafi'i": "📘",
-            "Hanbali": "📙",
+            "Maliki": "📙",
+            "Shafi'i": "📗",
+            "Hanbali": "📘",
         }
 
         # Optionen mit Emojis erstellen
