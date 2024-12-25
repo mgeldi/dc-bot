@@ -470,29 +470,43 @@ class VerificationButtons(discord.ui.View):
     async def interest_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_interessiert = discord.utils.get(interaction.guild.roles, name="Interessiert")
+        category = interaction.guild.get_channel(1314116985499553812)  # Kategorie-ID für Interessierte
+        role_sonstige = discord.utils.get(interaction.guild.roles, name="Sonstige")
 
         if role_unverifiziert in interaction.user.roles:
-            category = interaction.guild.get_channel(1314116985499553812)  # Kategorie-ID
-            overwrites = {
-                interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-                interaction.guild.me: discord.PermissionOverwrite(read_messages=True),
-                discord.utils.get(interaction.guild.roles, name="Owner"): discord.PermissionOverwrite(read_messages=True),
-                discord.utils.get(interaction.guild.roles, name="Admin"): discord.PermissionOverwrite(read_messages=True),
-                discord.utils.get(interaction.guild.roles, name="Sonstige"): discord.PermissionOverwrite(read_messages=True),
-                interaction.user: discord.PermissionOverwrite(read_messages=True)
-            }
-            channel_name = f"dawah-{interaction.user.name}"
-            new_channel = await category.create_text_channel(channel_name, overwrites=overwrites)
-
             await interaction.user.add_roles(role_interessiert)
             await interaction.user.remove_roles(role_unverifiziert)
-            await interaction.response.send_message(
-                f"Du hast die Rolle 'Interessiert' erhalten! Bitte fahre hier fort: {new_channel.mention}",
-                ephemeral=True
+
+            # Erstellen eines neuen Channels
+            new_channel = await category.create_text_channel(
+                name=f"dawah-{interaction.user.name}",
+                overwrites={
+                    interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                    interaction.user: discord.PermissionOverwrite(read_messages=True, send_messages=True),
+                    role_sonstige: discord.PermissionOverwrite(read_messages=True, send_messages=True),
+                    discord.utils.get(interaction.guild.roles, name="Owner"): discord.PermissionOverwrite(read_messages=True, send_messages=True),
+                    discord.utils.get(interaction.guild.roles, name="Admin"): discord.PermissionOverwrite(read_messages=True, send_messages=True)
+                }
             )
+
+            # Begrüßungsnachricht
+            await new_channel.send(
+                f"""Willkommen {interaction.user.mention},
+
+    unsere Ansprechpartner {role_sonstige.mention} werden sich bald bei dir melden! 
+    Wenn du Fragen oder Gedanken hast, kannst du sie gerne hier teilen. 
+    Wir freuen uns, mit dir ins Gespräch zu kommen!"""
+            )
+
+            # Ephemeral-Message zur Bestätigung
+            await interaction.response.send_message(
+                f"Ein neuer Channel wurde für dich erstellt: {new_channel.mention}. Bitte fahre dort fort.", ephemeral=True
+            )
+
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
-            await interaction.response.send_message("Du hast bereits eine Auswahl getroffen. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
+            await interaction.response.send_message("Du bist bereits verifiziert oder hast dich bereits gemeldet.", ephemeral=True)
+
 
 
 # Setup-Verification-Befehl
