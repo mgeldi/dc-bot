@@ -433,15 +433,17 @@ class VerificationButtons(discord.ui.View):
     async def muslim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslim = discord.utils.get(interaction.guild.roles, name="Unverifiziert M")
-        channel_id = 1314112301162430464  # Channel-ID für "Muslim"
+        guild = interaction.guild
+        target_channel = discord.utils.get(guild.channels, id=1314112301162430464)
+
 
         if role_unverifiziert in interaction.user.roles:
             await interaction.user.add_roles(role_muslim)
-            await interaction.user.remove_roles(role_unverifiziert)
             await interaction.response.send_message(
-                f"Du wurdest als **Muslim** verifiziert. [Gehe zu deinem Kanal](<#{channel_id}>)", 
+                f"Du hast die Rolle 'Unverifiziert M' erhalten! Bitte fahre hier fort: {target_channel.mention}",
                 ephemeral=True
             )
+            await interaction.user.remove_roles(role_unverifiziert)
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
             await interaction.response.send_message("Du bist bereits verifiziert.", ephemeral=True)
@@ -450,15 +452,16 @@ class VerificationButtons(discord.ui.View):
     async def muslima_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslima = discord.utils.get(interaction.guild.roles, name="Unverifiziert W")
-        channel_id = 1314112392594194482  # Channel-ID für "Muslima"
+        guild = interaction.guild
+        target_channel = discord.utils.get(guild.channels, id=1314112392594194482)
 
         if role_unverifiziert in interaction.user.roles:
             await interaction.user.add_roles(role_muslima)
-            await interaction.user.remove_roles(role_unverifiziert)
             await interaction.response.send_message(
-                f"Du wurdest als **Muslima** verifiziert. [Gehe zu deinem Kanal](<#{channel_id}>)", 
+                f"Du hast die Rolle 'Unverifiziert W' erhalten! Bitte fahre hier fort: {target_channel.mention}",
                 ephemeral=True
             )
+            await interaction.user.remove_roles(role_unverifiziert)
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
             await interaction.response.send_message("Du bist bereits verifiziert.", ephemeral=True)
