@@ -446,7 +446,7 @@ class VerificationButtons(discord.ui.View):
             await interaction.user.remove_roles(role_unverifiziert)
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
-            await interaction.response.send_message("Du bist bereits verifiziert.", ephemeral=True)
+            await interaction.response.send_message("Du hast bereits dein Geschlecht ausgewählt. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
 
     @discord.ui.button(label="Muslima", style=discord.ButtonStyle.red, custom_id="muslima_button")
     async def muslima_button(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -464,11 +464,13 @@ class VerificationButtons(discord.ui.View):
             await interaction.user.remove_roles(role_unverifiziert)
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
-            await interaction.response.send_message("Du bist bereits verifiziert.", ephemeral=True)
+            await interaction.response.send_message("Du hast bereits dein Geschlecht ausgewählt. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
 
     @discord.ui.button(label="Ich habe Interesse am Islam", style=discord.ButtonStyle.green, custom_id="interest_button")
     async def interest_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
+        role_interessiert = discord.utils.get(interaction.guild.roles, name="Interessiert")
+        
         if role_unverifiziert in interaction.user.roles:
             category = interaction.guild.get_channel(1314116985499553812)  # Kategorie-ID
             overwrites = {
@@ -482,13 +484,15 @@ class VerificationButtons(discord.ui.View):
             channel_name = f"dawah-{interaction.user.name}"
             new_channel = await category.create_text_channel(channel_name, overwrites=overwrites)
 
+            await interaction.user.add_roles(role_interessiert)
+            await interaction.user.remove_roles(role_unverifiziert)
             await interaction.response.send_message(
-                f"Ein Gesprächskanal wurde erstellt: [Gehe zu deinem Kanal](<#{new_channel.id}>)", 
+                f"Du hast die Rolle 'Interessiert' erhalten! Bitte fahre hier fort: {new_channel.mention}",
                 ephemeral=True
             )
             await self.disable_buttons_for_user_if_verified(interaction)
         else:
-            await interaction.response.send_message("Du bist bereits verifiziert.", ephemeral=True)
+            await interaction.response.send_message("Du hast bereits eine Auswahl getroffen. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
 
 
 # Setup-Verification-Befehl
