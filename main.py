@@ -148,8 +148,6 @@ class CityDropdown(discord.ui.Select):
             # Schweiz 🇨🇭
             discord.SelectOption(label="Aargau", value="Aargau", emoji="🇨🇭"),
             discord.SelectOption(label="Bern", value="Bern", emoji="🇨🇭"),
-            discord.SelectOption(label="Graubünden", value="Graubünden", emoji="🇨🇭"),
-            discord.SelectOption(label="Waadt", value="Waadt", emoji="🇨🇭"),
             discord.SelectOption(label="Zürich", value="Zürich", emoji="🇨🇭"),
         ]
 
