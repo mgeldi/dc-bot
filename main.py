@@ -57,216 +57,10 @@ class AgeDropdown(discord.ui.Select):
             discord.SelectOption(label="40+", value="40+"),
         ]
         super().__init__(placeholder="Wähle deine Altersgruppe aus",
-                         min_values=1,
+                         min_values=0,  # Abwählbar
                          max_values=1,
                          options=options,
                          custom_id="age_dropdown")
-
-    async def callback(self, interaction: discord.Interaction):
-        selected_role_name = self.values[0]
-        guild = interaction.guild
-
-        # Überprüfen, ob die Rolle existiert
-        selected_role = discord.utils.get(guild.roles, name=selected_role_name)
-        if selected_role is None:
-            await interaction.response.send_message(
-                f"Die Rolle **{selected_role_name}** existiert nicht.",
-                ephemeral=True)
-            return
-
-        # Entfernen anderer Altersgruppenrollen und Hinzufügen der neuen Rolle
-        await remove_roles_in_category(interaction.user, AGE_ROLES, guild)
-        await interaction.user.add_roles(selected_role)
-
-        # Aktualisieren der Dropdown-Optionen
-        self.options = update_dropdown_options(selected_role_name, self.options)
-
-        # Senden einer ephemeral Nachricht an den Benutzer
-        await interaction.response.send_message(
-            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Altersgruppen-Rollen wurden entfernt.",
-            ephemeral=True
-        )
-
-
-
-class AgeDropdownView(discord.ui.View):
-
-    def __init__(self):
-        super().__init__(timeout=None)  # Persistente View
-        self.add_item(AgeDropdown())
-
-
-# Dropdown-Menü für Städte
-class CityDropdown(discord.ui.Select):
-
-    def __init__(self):
-        options = [
-            # Deutschland 🇩🇪
-            discord.SelectOption(label="Baden-Württemberg",
-                                value="Baden-Württemberg",
-                                emoji="🇩🇪"),
-            discord.SelectOption(label="Bayern", value="Bayern", emoji="🇩🇪"),
-            discord.SelectOption(label="Berlin", value="Berlin", emoji="🇩🇪"),
-            discord.SelectOption(label="Bremen", value="Bremen", emoji="🇩🇪"),
-            discord.SelectOption(label="Hamburg", value="Hamburg", emoji="🇩🇪"),
-            discord.SelectOption(label="Hessen", value="Hessen", emoji="🇩🇪"),
-            discord.SelectOption(label="Mecklenburg-Vorpommern",
-                                value="Mecklenburg-Vorpommern",
-                                emoji="🇩🇪"),
-            discord.SelectOption(label="Niedersachsen",
-                                value="Niedersachsen",
-                                emoji="🇩🇪"),
-            discord.SelectOption(label="Nordrhein-Westfalen",
-                                value="Nordrhein-Westfalen",
-                                emoji="🇩🇪"),
-            discord.SelectOption(label="Rheinland-Pfalz",
-                                value="Rheinland-Pfalz",
-                                emoji="🇩🇪"),
-            discord.SelectOption(label="Saarland", value="Saarland", emoji="🇩🇪"),
-            discord.SelectOption(label="Sachsen", value="Sachsen", emoji="🇩🇪"),
-            discord.SelectOption(label="Sachsen-Anhalt",
-                                value="Sachsen-Anhalt",
-                                emoji="🇩🇪"),
-            discord.SelectOption(label="Schleswig-Holstein",
-                                value="Schleswig-Holstein",
-                                emoji="🇩🇪"),
-            discord.SelectOption(label="Thüringen", value="Thüringen", emoji="🇩🇪"),
-
-            # Österreich 🇦🇹
-            discord.SelectOption(label="Burgenland", value="Burgenland", emoji="🇦🇹"),
-            discord.SelectOption(label="Linz", value="Linz", emoji="🇦🇹"),
-            discord.SelectOption(label="Niederösterreich",
-                                value="Niederösterreich",
-                                emoji="🇦🇹"),
-            discord.SelectOption(label="Oberösterreich",
-                                value="Oberösterreich",
-                                emoji="🇦🇹"),
-            discord.SelectOption(label="Steiermark", value="Steiermark", emoji="🇦🇹"),
-            discord.SelectOption(label="Tirol", value="Tirol", emoji="🇦🇹"),
-            discord.SelectOption(label="Wien", value="Wien", emoji="🇦🇹"),
-
-            # Schweiz 🇨🇭
-            discord.SelectOption(label="Aargau", value="Aargau", emoji="🇨🇭"),
-            discord.SelectOption(label="Bern", value="Bern", emoji="🇨🇭"),
-            discord.SelectOption(label="Zürich", value="Zürich", emoji="🇨🇭"),
-        ]
-
-        super().__init__(placeholder="Wähle deine Stadt aus",
-                         min_values=1,
-                         max_values=1,
-                         options=options,
-                         custom_id="city_dropdown")
-
-    async def callback(self, interaction: discord.Interaction):
-        selected_role_name = self.values[0]
-        guild = interaction.guild
-
-        # Überprüfen, ob die Rolle existiert
-        selected_role = discord.utils.get(guild.roles, name=selected_role_name)
-        if selected_role is None:
-            await interaction.response.send_message(
-                f"Die Rolle **{selected_role_name}** existiert nicht.",
-                ephemeral=True)
-            return
-
-        # Entfernen anderer Städte-Rollen und Hinzufügen der neuen Rolle
-        await remove_roles_in_category(interaction.user, CITY_ROLES, guild)
-        await interaction.user.add_roles(selected_role)
-
-        # Aktualisieren der Dropdown-Optionen
-        self.options = update_dropdown_options(selected_role_name, self.options)
-
-        # Senden einer ephemeral Nachricht an den Benutzer
-        await interaction.response.send_message(
-            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Städte-Rollen wurden entfernt.",
-            ephemeral=True
-        )
-
-class CityDropdownView(discord.ui.View):
-
-    def __init__(self):
-        super().__init__(timeout=None)  # Persistente View
-        self.add_item(CityDropdown())
-
-
-# Dropdown-Menü für Rechtsschulen
-class SchoolDropdown(discord.ui.Select):
-
-    def __init__(self):
-        # Mapping der Rollen zu Emojis
-        school_emojis = {
-            "Hanafi": "📕",
-            "Maliki": "📙",
-            "Shafi'i": "📗",
-            "Hanbali": "📘",
-        }
-
-        # Optionen mit Emojis erstellen
-        options = [
-            discord.SelectOption(
-                label=school,
-                value=school,
-                emoji=school_emojis.get(school, "📖")  # Standard-Emoji, falls keine Zuordnung existiert
-            ) for school in SCHOOL_ROLES
-        ]
-
-        super().__init__(placeholder="Wähle deine Rechtsschule aus",
-                         min_values=1,
-                         max_values=1,
-                         options=options,
-                         custom_id="school_dropdown")
-
-    async def callback(self, interaction: discord.Interaction):
-        selected_role_name = self.values[0]
-        guild = interaction.guild
-
-        # Überprüfen, ob die Rolle existiert
-        selected_role = discord.utils.get(guild.roles, name=selected_role_name)
-        if selected_role is None:
-            await interaction.response.send_message(
-                f"Die Rolle **{selected_role_name}** existiert nicht.",
-                ephemeral=True)
-            return
-
-        # Entfernen anderer Schul-Rollen und Hinzufügen der neuen Rolle
-        current_roles = interaction.user.roles
-        school_roles = [
-            discord.utils.get(guild.roles, name=school) for school in SCHOOL_ROLES
-        ]
-        school_roles = [role for role in school_roles if role is not None]  # Nur existierende Rollen
-
-        for role in school_roles:
-            if role in current_roles and role != selected_role:
-                await interaction.user.remove_roles(role)
-
-        await interaction.user.add_roles(selected_role)
-
-        await interaction.response.send_message(
-            f"Du hast die Rolle **{selected_role_name}** erhalten. Andere Rechtsschulen-Rollen wurden entfernt.",
-            ephemeral=True)
-
-
-class SchoolDropdownView(discord.ui.View):
-
-    def __init__(self):
-        super().__init__(timeout=None)  # Persistente View
-        self.add_item(SchoolDropdown())
-
-class BildungsrollenDropdown(discord.ui.Select):
-
-    def __init__(self):
-        options = [
-            discord.SelectOption(label="Quran", value="Quran", emoji="🕋"),
-            discord.SelectOption(label="Unterrichte", value="Unterrichte", emoji="🖋️"),
-            discord.SelectOption(label="Buchvorlesungen", value="Buchvorlesungen", emoji="📖"),
-            discord.SelectOption(label="Vorträge", value="Vorträge", emoji="📚"),
-            discord.SelectOption(label="Podcasts", value="Podcasts", emoji="🎙️"),
-        ]
-        super().__init__(placeholder="Wähle deine Bildungsrollen aus",
-                         min_values=0,
-                         max_values=len(options),
-                         options=options,
-                         custom_id="bildungsrollen_dropdown")
 
     async def callback(self, interaction: discord.Interaction):
         guild = interaction.guild
@@ -308,8 +102,225 @@ class BildungsrollenDropdown(discord.ui.Select):
         await interaction.response.send_message(response_message, ephemeral=True)
 
 
-class BildungsrollenDropdownView(discord.ui.View):
+class AgeDropdownView(discord.ui.View):
 
+    def __init__(self):
+        super().__init__(timeout=None)  # Persistente View
+        self.add_item(AgeDropdown())
+
+
+# Dropdown-Menü für Städte
+class CityDropdown(discord.ui.Select):
+
+    def __init__(self):
+        options = [
+            # Deutschland 🇩🇪
+            discord.SelectOption(label="Baden-Württemberg", value="Baden-Württemberg", emoji="🇩🇪"),
+            discord.SelectOption(label="Bayern", value="Bayern", emoji="🇩🇪"),
+            discord.SelectOption(label="Berlin", value="Berlin", emoji="🇩🇪"),
+            discord.SelectOption(label="Bremen", value="Bremen", emoji="🇩🇪"),
+            discord.SelectOption(label="Hamburg", value="Hamburg", emoji="🇩🇪"),
+            discord.SelectOption(label="Hessen", value="Hessen", emoji="🇩🇪"),
+            discord.SelectOption(label="Mecklenburg-Vorpommern", value="Mecklenburg-Vorpommern", emoji="🇩🇪"),
+            discord.SelectOption(label="Niedersachsen", value="Niedersachsen", emoji="🇩🇪"),
+            discord.SelectOption(label="Nordrhein-Westfalen", value="Nordrhein-Westfalen", emoji="🇩🇪"),
+            discord.SelectOption(label="Rheinland-Pfalz", value="Rheinland-Pfalz", emoji="🇩🇪"),
+            discord.SelectOption(label="Saarland", value="Saarland", emoji="🇩🇪"),
+            discord.SelectOption(label="Sachsen", value="Sachsen", emoji="🇩🇪"),
+            discord.SelectOption(label="Sachsen-Anhalt", value="Sachsen-Anhalt", emoji="🇩🇪"),
+            discord.SelectOption(label="Schleswig-Holstein", value="Schleswig-Holstein", emoji="🇩🇪"),
+            discord.SelectOption(label="Thüringen", value="Thüringen", emoji="🇩🇪"),
+
+            # Österreich 🇦🇹
+            discord.SelectOption(label="Burgenland", value="Burgenland", emoji="🇦🇹"),
+            discord.SelectOption(label="Linz", value="Linz", emoji="🇦🇹"),
+            discord.SelectOption(label="Niederösterreich", value="Niederösterreich", emoji="🇦🇹"),
+            discord.SelectOption(label="Oberösterreich", value="Oberösterreich", emoji="🇦🇹"),
+            discord.SelectOption(label="Steiermark", value="Steiermark", emoji="🇦🇹"),
+            discord.SelectOption(label="Tirol", value="Tirol", emoji="🇦🇹"),
+            discord.SelectOption(label="Wien", value="Wien", emoji="🇦🇹"),
+
+            # Schweiz 🇨🇭
+            discord.SelectOption(label="Aargau", value="Aargau", emoji="🇨🇭"),
+            discord.SelectOption(label="Bern", value="Bern", emoji="🇨🇭"),
+            discord.SelectOption(label="Zürich", value="Zürich", emoji="🇨🇭"),
+        ]
+
+        super().__init__(placeholder="Wähle deine Stadt aus",
+                         min_values=0,  # Abwählbar
+                         max_values=1,
+                         options=options,
+                         custom_id="city_dropdown")
+
+    async def callback(self, interaction: discord.Interaction):
+        guild = interaction.guild
+        user_roles = interaction.user.roles
+
+        # Rollen, die durch das Dropdown repräsentiert werden
+        valid_roles = [discord.utils.get(guild.roles, name=option.value) for option in self.options]
+        valid_roles = [role for role in valid_roles if role is not None]  # Nur existierende Rollen
+
+        # Rollen, die der Benutzer derzeit hat und in diesem Dropdown enthalten sind
+        current_roles = set(role for role in user_roles if role in valid_roles)
+
+        # Rollen, die in der aktuellen Auswahl sind
+        selected_roles = set(discord.utils.get(guild.roles, name=value) for value in self.values)
+
+        # Rollen, die hinzugefügt oder entfernt werden sollen
+        roles_to_add = selected_roles - current_roles
+        roles_to_remove = current_roles - selected_roles
+
+        # Änderungen anwenden
+        if roles_to_add:
+            await interaction.user.add_roles(*roles_to_add)
+        if roles_to_remove:
+            await interaction.user.remove_roles(*roles_to_remove)
+
+        # Nachricht für den Benutzer
+        added_roles = ", ".join([role.name for role in roles_to_add])
+        removed_roles = ", ".join([role.name for role in roles_to_remove])
+
+        response_message = "Deine Rollen wurden aktualisiert:\n"
+        if roles_to_add:
+            response_message += f"✅ Hinzugefügt: {added_roles}\n"
+        if roles_to_remove:
+            response_message += f"❌ Entfernt: {removed_roles}\n"
+
+        if not roles_to_add and not roles_to_remove:
+            response_message = "Keine Änderungen vorgenommen."
+
+        await interaction.response.send_message(response_message, ephemeral=True)
+
+
+class CityDropdownView(discord.ui.View):
+
+    def __init__(self):
+        super().__init__(timeout=None)  # Persistente View
+        self.add_item(CityDropdown())
+
+# Dropdown-Menü für Rechtsschulen
+class SchoolDropdown(discord.ui.Select):
+
+    def __init__(self):
+        # Mapping der Rollen zu Emojis
+        school_emojis = {
+            "Hanafi": "📕",
+            "Maliki": "📙",
+            "Shafi'i": "📗",
+            "Hanbali": "📘",
+        }
+
+        # Optionen mit Emojis erstellen
+        options = [
+            discord.SelectOption(
+                label=school,
+                value=school,
+                emoji=school_emojis.get(school, "📖")  # Standard-Emoji, falls keine Zuordnung existiert
+            ) for school in SCHOOL_ROLES
+        ]
+
+        super().__init__(placeholder="Wähle deine Rechtsschule aus",
+                         min_values=0,
+                         max_values=1,
+                         options=options,
+                         custom_id="school_dropdown")
+
+    async def callback(self, interaction: discord.Interaction):
+        guild = interaction.guild
+        user_roles = interaction.user.roles
+
+        # Überprüfen, ob die Rolle existiert
+        selected_role_name = self.values[0] if self.values else None
+        selected_role = discord.utils.get(guild.roles, name=selected_role_name)
+
+        # Entfernen anderer Schul-Rollen
+        school_roles = [
+            discord.utils.get(guild.roles, name=school) for school in SCHOOL_ROLES
+        ]
+        school_roles = [role for role in school_roles if role is not None]
+
+        for role in school_roles:
+            if role in user_roles:
+                await interaction.user.remove_roles(role)
+
+        # Hinzufügen der ausgewählten Rolle, falls eine gewählt wurde
+        if selected_role:
+            await interaction.user.add_roles(selected_role)
+
+        response_message = (
+            f"Du hast die Rolle **{selected_role_name}** erhalten." 
+            if selected_role_name else 
+            "Alle Rechtsschulen-Rollen wurden entfernt."
+        )
+
+        await interaction.response.send_message(response_message, ephemeral=True)
+
+
+class SchoolDropdownView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)  # Persistente View
+        self.add_item(SchoolDropdown())
+
+
+# Dropdown-Menü für Bildungsrollen
+class BildungsrollenDropdown(discord.ui.Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="Quran", value="Quran", emoji="🕋"),
+            discord.SelectOption(label="Unterrichte", value="Unterrichte", emoji="🖋️"),
+            discord.SelectOption(label="Buchvorlesungen", value="Buchvorlesungen", emoji="📖"),
+            discord.SelectOption(label="Vorträge", value="Vorträge", emoji="📚"),
+            discord.SelectOption(label="Podcasts", value="Podcasts", emoji="🎙️"),
+        ]
+        super().__init__(placeholder="Wähle deine Bildungsrollen aus",
+                         min_values=0,
+                         max_values=len(options),
+                         options=options,
+                         custom_id="bildungsrollen_dropdown")
+
+    async def callback(self, interaction: discord.Interaction):
+        guild = interaction.guild
+        user_roles = interaction.user.roles
+
+        # Rollen, die durch das Dropdown repräsentiert werden
+        valid_roles = [discord.utils.get(guild.roles, name=option.value) for option in self.options]
+        valid_roles = [role for role in valid_roles if role is not None]  # Nur existierende Rollen
+
+        # Rollen, die der Benutzer derzeit hat und in diesem Dropdown enthalten sind
+        current_roles = set(role for role in user_roles if role in valid_roles)
+
+        # Rollen, die in der aktuellen Auswahl sind
+        selected_roles = set(
+            discord.utils.get(guild.roles, name=value) for value in self.values if value
+        )
+
+        # Rollen, die hinzugefügt oder entfernt werden sollen
+        roles_to_add = selected_roles - current_roles
+        roles_to_remove = current_roles - selected_roles
+
+        # Änderungen anwenden
+        if roles_to_add:
+            await interaction.user.add_roles(*roles_to_add)
+        if roles_to_remove:
+            await interaction.user.remove_roles(*roles_to_remove)
+
+        # Nachricht für den Benutzer
+        added_roles = ", ".join([role.name for role in roles_to_add])
+        removed_roles = ", ".join([role.name for role in roles_to_remove])
+
+        response_message = "Deine Rollen wurden aktualisiert:\n"
+        if roles_to_add:
+            response_message += f"✅ Hinzugefügt: {added_roles}\n"
+        if roles_to_remove:
+            response_message += f"❌ Entfernt: {removed_roles}\n"
+
+        if not roles_to_add and not roles_to_remove:
+            response_message = "Keine Änderungen vorgenommen."
+
+        await interaction.response.send_message(response_message, ephemeral=True)
+
+
+class BildungsrollenDropdownView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)  # Persistente View
         self.add_item(BildungsrollenDropdown())
