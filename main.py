@@ -595,6 +595,7 @@ async def on_ready():
     bot.add_view(AgeDropdownView())
     bot.add_view(CityDropdownView())
     bot.add_view(SchoolDropdownView())
+    bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
 
 
