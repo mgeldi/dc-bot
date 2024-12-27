@@ -11,8 +11,10 @@ bot = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(bot)
 
 # Globale Definition von ALLOWED_ROLES
-BRUDER_ROLES = ["Bruder", "Bruder+"]
-SCHWESTER_ROLES = ["Schwester", "Schwester+"]
+SCHWESTER_ROLE = "Schwester"
+BRUDER_ROLE = "Bruder"
+ALLOWED_SCHWESTER_ROLES = ["Owner", "Admin+", "Admin", "Admina"]
+ALLOWED_BRUDER_ROLES = ["Owner", "Admin+", "Admin"]
 roles_to_remove = ["Unverifiziert", "Unverifiziert M", "Unverifiziert W"]
 AGE_ROLES = ["15-20", "21-25", "25-30", "30-35", "36-40", "40+"]
 CITY_ROLES = [
@@ -372,80 +374,96 @@ async def setup_roles(interaction: discord.Interaction):
                                    view=BildungsrollenDropdownView())
 
 
-# Slash Command definieren
-@tree.command(name="verifizieren",
-              description="Weist einem Benutzer eine bestimmte Rolle zu.")
-async def verifizieren(
-        interaction: discord.Interaction,
-        user: discord.Member,  # Benutzer auswählen
-        role: str  # Rolle auswählen
-):
-    # Berechtigung des ausführenden Benutzers prüfen
+SCHWESTER_ROLE = "Schwester"
+BRUDER_ROLE = "Bruder"
+ALLOWED_SCHWESTER_ROLES = ["Owner", "Admin+", "Admin", "Admina"]
+ALLOWED_BRUDER_ROLES = ["Owner", "Admin+", "Admin"]
+
+# Slash-Command: verify-schwester
+@tree.command(name="verify-schwester", 
+              description="Weist einem Benutzer die Rolle 'Schwester' zu.")
+async def verify_schwester(interaction: discord.Interaction, user: discord.Member):
+    # Berechtigungen prüfen
     executor_roles = [r.name for r in interaction.user.roles]
-    if any(r.startswith("Verifiziererin")
-           for r in executor_roles) and role not in SCHWESTER_ROLES:
+    if not any(r in ALLOWED_SCHWESTER_ROLES or r.startswith("Verifiziererin") for r in executor_roles):
         await interaction.response.send_message(
-            "Du darfst nur die Rollen 'Schwester' oder 'Schwester+' zuweisen.",
-            ephemeral=True)
-        return
-    elif any(r.startswith("Verifizierer")
-             for r in executor_roles) and role not in BRUDER_ROLES:
-        await interaction.response.send_message(
-            "Du darfst nur die Rollen 'Bruder' oder 'Bruder+' zuweisen.",
-            ephemeral=True)
+            "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
+        )
         return
 
-    # Überprüfen, ob die Rolle auf dem Server existiert
-    guild_role = discord.utils.get(interaction.guild.roles, name=role)
+    # Überprüfen, ob die Rolle existiert
+    guild_role = discord.utils.get(interaction.guild.roles, name=SCHWESTER_ROLE)
     if guild_role is None:
         await interaction.response.send_message(
-            f"Die Rolle '{role}' existiert nicht auf diesem Server.",
-            ephemeral=True)
+            f"Die Rolle '{SCHWESTER_ROLE}' existiert nicht auf diesem Server.", ephemeral=True
+        )
         return
 
     # Zuweisung der Rolle
     try:
         await user.add_roles(guild_role)
 
-        # Entfernen der Rolle "Unverifiziert" sowie "Unverifiziert M|W"
+        # Entfernen der Rolle "Unverifiziert" und ähnliche Rollen
+        roles_to_remove = ["Unverifiziert", "Unverifiziert W"]
         for role_name in roles_to_remove:
             role_to_remove = discord.utils.get(interaction.guild.roles, name=role_name)
             if role_to_remove and role_to_remove in user.roles:
                 await user.remove_roles(role_to_remove)
 
         await interaction.response.send_message(
-            f"Die Rolle '{role}' wurde erfolgreich {user.mention} zugewiesen!")
+            f"Die Rolle '{SCHWESTER_ROLE}' wurde erfolgreich {user.mention} zugewiesen!"
+        )
     except discord.Forbidden:
         await interaction.response.send_message(
-            "Ich habe nicht die Berechtigung, diese Rolle zuzuweisen.",
-            ephemeral=True)
+            "Ich habe nicht die Berechtigung, diese Rolle zuzuweisen.", ephemeral=True
+        )
     except Exception as e:
         await interaction.response.send_message(
-            f"Ein Fehler ist aufgetreten: {e}", ephemeral=True)
+            f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
+        )
 
-
-# Autocomplete für den `role`-Parameter
-@verifizieren.autocomplete("role")
-async def role_autocomplete(interaction: discord.Interaction, current: str):
-    # Berechtigung des ausführenden Benutzers prüfen
+# Slash-Command: verify-bruder
+@tree.command(name="verify-bruder", 
+              description="Weist einem Benutzer die Rolle 'Bruder' zu.")
+async def verify_bruder(interaction: discord.Interaction, user: discord.Member):
+    # Berechtigungen prüfen
     executor_roles = [r.name for r in interaction.user.roles]
+    if not any(r in ALLOWED_BRUDER_ROLES or r.startswith("Verifizierer") for r in executor_roles):
+        await interaction.response.send_message(
+            "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
+        )
+        return
 
-    if any(r.startswith("Verifiziererin") for r in executor_roles):
-        allowed_roles = SCHWESTER_ROLES
-    elif any(r.startswith("Verifizierer") for r in executor_roles):
-        allowed_roles = BRUDER_ROLES
-    else:
-        allowed_roles = [
-        ]  # Keine Rollen anzeigen, falls keine Berechtigung vorhanden ist
+    # Überprüfen, ob die Rolle existiert
+    guild_role = discord.utils.get(interaction.guild.roles, name=BRUDER_ROLE)
+    if guild_role is None:
+        await interaction.response.send_message(
+            f"Die Rolle '{BRUDER_ROLE}' existiert nicht auf diesem Server.", ephemeral=True
+        )
+        return
 
-    # Nur erlaubte Rollen anzeigen, die zur Eingabe passen
-    matching_roles = [
-        role for role in allowed_roles if current.lower() in role.lower()
-    ]
-    return [
-        discord.app_commands.Choice(name=role, value=role)
-        for role in matching_roles
-    ]
+    # Zuweisung der Rolle
+    try:
+        await user.add_roles(guild_role)
+
+        # Entfernen der Rolle "Unverifiziert" und ähnliche Rollen
+        roles_to_remove = ["Unverifiziert", "Unverifiziert M"]
+        for role_name in roles_to_remove:
+            role_to_remove = discord.utils.get(interaction.guild.roles, name=role_name)
+            if role_to_remove and role_to_remove in user.roles:
+                await user.remove_roles(role_to_remove)
+
+        await interaction.response.send_message(
+            f"Die Rolle '{BRUDER_ROLE}' wurde erfolgreich {user.mention} zugewiesen!"
+        )
+    except discord.Forbidden:
+        await interaction.response.send_message(
+            "Ich habe nicht die Berechtigung, diese Rolle zuzuweisen.", ephemeral=True
+        )
+    except Exception as e:
+        await interaction.response.send_message(
+            f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
+        )
 
 # Slash Command zum Hinzufügen eines Nutzers zu einem Thread
 @tree.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
