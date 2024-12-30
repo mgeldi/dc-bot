@@ -605,7 +605,7 @@ async def setup_verification(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed, view=VerificationButtons())
     await interaction.response.send_message("Verifizierung wurde eingerichtet!", ephemeral=True)
 
-@bot.tree.command(name="sheikh-info")
+@tree.command(name="sheikh-info", description="Informationen zu Sheikh Dr. Adnan Yusuf Husain")
 async def sheikh_info(interaction: discord.Interaction):
     embed = discord.Embed(
         title="Sheikh Dr. Adnan Yusuf Husain",
@@ -646,7 +646,7 @@ async def sheikh_info(interaction: discord.Interaction):
 
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="sheikh-kurse")
+@tree.command(name="sheikh-kurse", description="Informationen zu den angebotenen Kursen vom Sheikh")
 async def sheikh_kurse(interaction: discord.Interaction):
     embed = discord.Embed(
         title="Sheikh Dr. Adnan Yusuf Husain - Kurse",
