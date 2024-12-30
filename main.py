@@ -691,6 +691,7 @@ async def sheikh_kurse(interaction: discord.Interaction):
     )
 
     embed.set_footer(text="Nutze die Gelegenheit, dein Wissen zu erweitern und in die islamischen Wissenschaften einzutauchen!")
+    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1323398851872428143/islamwissenschaften.png?ex=67745eb9&is=67730d39&hm=02ad3e5ffbd39cb64c6ffb1750f63813142f63fa52c4bf4cc6a2a71051fe91bf&=&format=webp&quality=lossless&width=375&height=375")
 
     await interaction.response.send_message(embed=embed)
 
