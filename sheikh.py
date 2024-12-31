@@ -39,6 +39,7 @@ async def sheikh_info(interaction: discord.Interaction):
     )
 
     embed.set_footer(text="Wir freuen uns, den Sheikh auf unserem Server begrüßen zu dürfen!")
+    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1323708229858889738/sheikh.jpg?ex=67757edb&is=67742d5b&hm=40288fc45a447f4786b0e11a37a53e08fb2ad03e7db4dd8d2d55d5769ad176a1&=&format=webp&width=1530&height=1355")
 
     await interaction.response.send_message(embed=embed)
 
