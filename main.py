@@ -373,98 +373,6 @@ async def setup_roles(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed_school,
                                    view=BildungsrollenDropdownView())
 
-
-SCHWESTER_ROLE = "Schwester"
-BRUDER_ROLE = "Bruder"
-ALLOWED_SCHWESTER_ROLES = ["Owner", "Admin+", "Admin", "Admina"]
-ALLOWED_BRUDER_ROLES = ["Owner", "Admin+", "Admin"]
-
-# Slash-Command: verify-schwester
-@bot.tree.command(name="verify-schwester", 
-              description="Weist einem Benutzer die Rolle 'Schwester' zu.")
-async def verify_schwester(interaction: discord.Interaction, user: discord.Member):
-    # Berechtigungen prüfen
-    executor_roles = [r.name for r in interaction.user.roles]
-    if not any(r in ALLOWED_SCHWESTER_ROLES or r.startswith("Verifiziererin") for r in executor_roles):
-        await interaction.response.send_message(
-            "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
-        )
-        return
-
-    # Überprüfen, ob die Rolle existiert
-    guild_role = discord.utils.get(interaction.guild.roles, name=SCHWESTER_ROLE)
-    if guild_role is None:
-        await interaction.response.send_message(
-            f"Die Rolle '{SCHWESTER_ROLE}' existiert nicht auf diesem Server.", ephemeral=True
-        )
-        return
-
-    # Zuweisung der Rolle
-    try:
-        await user.add_roles(guild_role)
-
-        # Entfernen der Rolle "Unverifiziert" und ähnliche Rollen
-        roles_to_remove = ["Unverifiziert", "Unverifiziert W"]
-        for role_name in roles_to_remove:
-            role_to_remove = discord.utils.get(interaction.guild.roles, name=role_name)
-            if role_to_remove and role_to_remove in user.roles:
-                await user.remove_roles(role_to_remove)
-
-        await interaction.response.send_message(
-            f"Die Rolle '{SCHWESTER_ROLE}' wurde erfolgreich {user.mention} zugewiesen!"
-        )
-    except discord.Forbidden:
-        await interaction.response.send_message(
-            "Ich habe nicht die Berechtigung, diese Rolle zuzuweisen.", ephemeral=True
-        )
-    except Exception as e:
-        await interaction.response.send_message(
-            f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
-        )
-
-# Slash-Command: verify-bruder
-@bot.tree.command(name="verify-bruder", 
-              description="Weist einem Benutzer die Rolle 'Bruder' zu.")
-async def verify_bruder(interaction: discord.Interaction, user: discord.Member):
-    # Berechtigungen prüfen
-    executor_roles = [r.name for r in interaction.user.roles]
-    if not any(r in ALLOWED_BRUDER_ROLES or r.startswith("Verifizierer") for r in executor_roles):
-        await interaction.response.send_message(
-            "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
-        )
-        return
-
-    # Überprüfen, ob die Rolle existiert
-    guild_role = discord.utils.get(interaction.guild.roles, name=BRUDER_ROLE)
-    if guild_role is None:
-        await interaction.response.send_message(
-            f"Die Rolle '{BRUDER_ROLE}' existiert nicht auf diesem Server.", ephemeral=True
-        )
-        return
-
-    # Zuweisung der Rolle
-    try:
-        await user.add_roles(guild_role)
-
-        # Entfernen der Rolle "Unverifiziert" und ähnliche Rollen
-        roles_to_remove = ["Unverifiziert", "Unverifiziert M"]
-        for role_name in roles_to_remove:
-            role_to_remove = discord.utils.get(interaction.guild.roles, name=role_name)
-            if role_to_remove and role_to_remove in user.roles:
-                await user.remove_roles(role_to_remove)
-
-        await interaction.response.send_message(
-            f"Die Rolle '{BRUDER_ROLE}' wurde erfolgreich {user.mention} zugewiesen!"
-        )
-    except discord.Forbidden:
-        await interaction.response.send_message(
-            "Ich habe nicht die Berechtigung, diese Rolle zuzuweisen.", ephemeral=True
-        )
-    except Exception as e:
-        await interaction.response.send_message(
-            f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
-        )
-
 # Slash Command zum Hinzufügen eines Nutzers zu einem Thread
 @bot.tree.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
 async def ticket_add(interaction: discord.Interaction, user: discord.Member):  # Ändere den Typ zu str
@@ -505,196 +413,6 @@ async def ticket_add(interaction: discord.Interaction, user: discord.Member):  #
             f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
         )
 
-class VerificationButtons(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-
-    async def disable_buttons_for_user_if_verified(self, interaction: discord.Interaction):
-        """Überprüft dynamisch die Rolle und deaktiviert Buttons nur, wenn nötig."""
-        role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
-        if role_unverifiziert not in interaction.user.roles:
-            for child in self.children:
-                if isinstance(child, discord.ui.Button):
-                    child.disabled = True
-            await interaction.message.edit(view=self)
-
-    @discord.ui.button(label="♂️ Muslim", style=discord.ButtonStyle.blurple, custom_id="muslim_button")
-    async def muslim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
-        role_muslim = discord.utils.get(interaction.guild.roles, name="Unverifiziert M")
-        guild = interaction.guild
-        target_channel = discord.utils.get(guild.channels, id=1314112301162430464)
-
-
-        if role_unverifiziert in interaction.user.roles:
-            await interaction.user.add_roles(role_muslim)
-            await interaction.response.send_message(
-                f"Du hast die Rolle 'Unverifiziert M' erhalten! Bitte fahre hier fort: {target_channel.mention}",
-                ephemeral=True
-            )
-            await interaction.user.remove_roles(role_unverifiziert)
-            await self.disable_buttons_for_user_if_verified(interaction)
-        else:
-            await interaction.response.send_message("Du hast bereits dein Geschlecht ausgewählt. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
-
-    @discord.ui.button(label="♀️ Muslima", style=discord.ButtonStyle.red, custom_id="muslima_button")
-    async def muslima_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
-        role_muslima = discord.utils.get(interaction.guild.roles, name="Unverifiziert W")
-        guild = interaction.guild
-        target_channel = discord.utils.get(guild.channels, id=1314112392594194482)
-
-        if role_unverifiziert in interaction.user.roles:
-            await interaction.user.add_roles(role_muslima)
-            await interaction.response.send_message(
-                f"Du hast die Rolle 'Unverifiziert W' erhalten! Bitte fahre hier fort: {target_channel.mention}",
-                ephemeral=True
-            )
-            await interaction.user.remove_roles(role_unverifiziert)
-            await self.disable_buttons_for_user_if_verified(interaction)
-        else:
-            await interaction.response.send_message("Du hast bereits dein Geschlecht ausgewählt. Hast du einen Fehler gemacht? Dann schildere die Situation innerhalb des Tickets.", ephemeral=True)
-
-    @discord.ui.button(label="📩 Ich habe Interesse am Islam", style=discord.ButtonStyle.green, custom_id="interest_button")
-    async def interest_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
-        role_interessiert = discord.utils.get(interaction.guild.roles, name="Interessiert")
-        # Der Channel, in dem der Benutzer fortfahren soll
-        channel = interaction.guild.get_channel(1314117160465076264)
-
-        if role_unverifiziert in interaction.user.roles:
-            # Rolle "Interessiert" hinzufügen und "Unverifiziert" entfernen
-            await interaction.user.add_roles(role_interessiert)
-            await interaction.user.remove_roles(role_unverifiziert)
-
-            # Ephemeral-Nachricht zur Bestätigung und Hinweis auf den Channel
-            await interaction.response.send_message(
-                f"Du hast jetzt die Rolle 'Interessiert'. Bitte fahre im {channel.mention} fort, um mit den nächsten Schritten fortzufahren.",
-                ephemeral=True
-            )
-
-            # Falls gewünscht, kannst du hier zusätzliche Logik einfügen,
-            # um Buttons zu deaktivieren oder den Status des Benutzers zu aktualisieren.
-            await self.disable_buttons_for_user_if_verified(interaction)
-        else:
-            await interaction.response.send_message("Du bist bereits verifiziert oder hast dich bereits gemeldet.", ephemeral=True)
-
-
-
-
-# Setup-Verification-Befehl
-@bot.tree.command(name="setup_verification", description="Richtet die Verifizierung mit Buttons ein.")
-async def setup_verification(interaction: discord.Interaction):
-    # Embed für Verifizierungstext
-    embed = discord.Embed(
-        title="🔒 Verifizierung",
-        description=(
-            "Bitte wähle zur Verifizierung:\n\n"
-            "Bist du Muslim oder Muslima❓\n"
-            "Dann wähle dein Geschlecht aus.\n\n"
-            "Ansonsten:\n"
-            "Hast du Interesse am Islam❓\n\n"
-            "Klicke einfach auf den entsprechenden Button, um fortzufahren❗"
-        ),
-        color=discord.Color.blue()
-    )
-    
-    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1321534361933316106/093e98cf90f519920d4569e9d0b69d33813821d55aab1a92b434752e2b5c33f4.png?ex=676d9648&is=676c44c8&hm=1688ebeab6de4bde4f5476cdc4f0392e8cb3929dac58e831584a4ee6a88cac71&=&format=webp&quality=lossless&width=1361&height=1361")
-
-    # Nachricht mit Buttons senden
-    await interaction.channel.send(embed=embed, view=VerificationButtons())
-    await interaction.response.send_message("Verifizierung wurde eingerichtet!", ephemeral=True)
-
-@bot.tree.command(name="sheikh-info", description="Informationen zu Sheikh Dr. Adnan Yusuf Husain")
-async def sheikh_info(interaction: discord.Interaction):
-    embed = discord.Embed(
-        title="Sheikh Dr. Adnan Yusuf Husain",
-        description="Hier einige Informationen über den Sheikh:",
-        color=discord.Color.blue()
-    )
-
-    embed.add_field(
-        name="Erfahrung & Bildung",
-        value=(
-            "• 20 Jahre Erfahrung im Erlernen und Lehren von Arabisch als Fremdsprache.\n"
-            "• Bachelor, Master und Doktorat an renommierten arabischen Universitäten.\n"
-            "• Doktor in Tafsir.\n"
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="Zukünftige Aktivitäten",
-        value=(
-            "• Der Sheikh wird voraussichtlich ab Mitte Januar 2025 regelmäßig auf diesem Server aktiv sein.\n"
-            "• Geplant sind tiefgehende Vorträge zu verschiedenen islamischen Themengebieten."
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="Relevante Links",
-        value=(
-            "[Website des Sheikh mit kostenlosen Kursen](https://www.islamwissenschaften.com/)\n"
-            "[Arabisch Kurs auf Skool mit individuellem Lehrplan](https://www.skool.com/lerne-arabisch/about)\n"
-            "[Telegram Gruppe des Sheikh](https://t.me/adnanyh)"
-        ),
-        inline=False
-    )
-
-    embed.set_footer(text="Wir freuen uns, den Sheikh auf unserem Server begrüßen zu dürfen!")
-
-    await interaction.response.send_message(embed=embed)
-
-@bot.tree.command(name="sheikh-kurse", description="Informationen zu den angebotenen Kursen vom Sheikh")
-async def sheikh_kurse(interaction: discord.Interaction):
-    embed = discord.Embed(
-        title="Sheikh Dr. Adnan Yusuf Husain - Kurse",
-        description="Hier findest du eine Übersicht über die Kurse, die vom Sheikh angeboten werden:",
-        color=discord.Color.green()
-    )
-
-    embed.add_field(
-        name="Kostenlose Kurse - islamwissenschaften.com",
-        value=(
-            "• Alle Kurse sind kostenlos und beinhalten folgende Themen:\n"
-            "  • Aqidah\n"
-            "  • Arabisch (Grammatik)\n"
-            "  • Fiqh\n"
-            "  • Qur'anwissenschaften\n"
-            "  • Tafsir\n"
-            "  • Usul al-Fiqh\n"
-            "• Kursplattform: [Islamwissenschaften.com](https://www.islamwissenschaften.com/courses)"
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="Kostenpflichtiger Arabisch-Kurs",
-        value=(
-            "• Der Sheikh bietet auch einen Arabisch-Kurs an, der auf deinen individuellen Lernplan abgestimmt wird.\n"
-            "• Der Kurs ist für alle Lernstufen geeignet und bietet ein personalisiertes Lernerlebnis.\n"
-            "• Weitere Informationen findest du hier: [Skool Arabisch-Kurs](https://www.skool.com/lerne-arabisch/about)"
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="Warum diese Kurse?",
-        value=(
-            "• Alle Kurse werden auf Deutsch angeboten.\n"
-            "• Du erhältst eine fundierte und strukturierte Ausbildung in den Bereichen Islam und Arabisch.\n"
-            "• Der Sheikh hat jahrzehntelange Erfahrung und vermittelt authentisches Wissen gemäß der Ahlus Sunnah wal Jamaah.\n"
-            "• Die kostenlose Kursplattform bietet dir Zugang zu einer Vielzahl von Themen, um dein Wissen zu erweitern."
-        ),
-        inline=False
-    )
-
-    embed.set_footer(text="Nutze die Gelegenheit, dein Wissen zu erweitern und in die islamischen Wissenschaften einzutauchen!")
-    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1323398851872428143/islamwissenschaften.png?ex=67745eb9&is=67730d39&hm=02ad3e5ffbd39cb64c6ffb1750f63813142f63fa52c4bf4cc6a2a71051fe91bf&=&format=webp&quality=lossless&width=375&height=375")
-
-    await interaction.response.send_message(embed=embed)
-
 # Bot starten
 @bot.event
 async def on_ready():
@@ -702,12 +420,21 @@ async def on_ready():
     bot.add_view(AgeDropdownView())
     bot.add_view(CityDropdownView())
     bot.add_view(SchoolDropdownView())
+    from verification import VerificationButtons
     bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
 
 if __name__ == "__main__":
     load_dotenv()
+    
     from prayer_times import gebetszeiten
+    from sheikh import sheikh_info, sheikh_kurse
+    from verification import verify_bruder, verify_schwester
+
     bot.tree.add_command(gebetszeiten)
+    bot.tree.add_command(sheikh_info)
+    bot.tree.add_command(sheikh_kurse)
+    bot.tree.add_command(verify_bruder)
+    bot.tree.add_command(verify_schwester)
 
     bot.run(os.getenv("BOT_TOKEN"))
