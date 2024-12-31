@@ -242,7 +242,7 @@ class SchoolDropdownView(discord.ui.View):
 class BildungsrollenDropdown(discord.ui.Select):
     def __init__(self):
         options = [
-            discord.SelectOption(label="Quran", value="Quran", emoji="🕋"),
+            discord.SelectOption(label="Koran", value="Koran", emoji="🕋"),
             discord.SelectOption(label="Unterrichte", value="Unterrichte", emoji="🖋️"),
             discord.SelectOption(label="Buchvorlesungen", value="Buchvorlesungen", emoji="📖"),
             discord.SelectOption(label="Vorträge", value="Vorträge", emoji="📚"),
