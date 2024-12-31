@@ -15,12 +15,13 @@ bot = commands.Bot(command_prefix=None, intents=intents)
 async def on_ready():
     await bot.tree.sync()  # Slash Commands mit Discord synchronisieren
 
-    from roles import AgeDropdownView, CityDropdownView, SchoolDropdownView
+    from roles import AgeDropdownView, CityDropdownView, SchoolDropdownView, BildungsrollenDropdownView
     from verification import VerificationButtons
 
     bot.add_view(AgeDropdownView())
     bot.add_view(CityDropdownView())
     bot.add_view(SchoolDropdownView())
+    bot.add_view(BildungsrollenDropdownView())
     bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
 
