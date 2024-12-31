@@ -710,6 +710,6 @@ async def on_ready():
     bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
 
-bot.tree.add_commad(gebetszeiten)
+tree.add_commad(gebetszeiten)
 bot.run(os.getenv("BOT_TOKEN"))
 
