@@ -4,7 +4,10 @@ from datetime import datetime
 from main import bot
 import requests
 
-@app_commands.command(name="gebetszeiten", description="Zeigt die Gebetszeiten für eine Stadt in Deutschland an.")
+
+
+@bot.tree.command(name="gebetszeiten", description="Zeigt die Gebetszeiten für eine bestimmte Stadt an.")
+@app_commands.describe(stadt="Name der Stadt", öffentlich="Leer lassen für privat, true für öffentlich")
 async def gebetszeiten(interaction: discord.Interaction, stadt: str, öffentlich: bool = False):
     rolle_namen = [role.name for role in interaction.user.roles]
     if "Bruder" not in rolle_namen and "Schwester" not in rolle_namen:

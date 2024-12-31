@@ -6,8 +6,6 @@ import requests
 
 import os
 
-load_dotenv()
-
 # Intents aktivieren
 intents = discord.Intents.default()
 intents.guilds = True  # Für Guild-Informationen
@@ -701,16 +699,17 @@ async def sheikh_kurse(interaction: discord.Interaction):
 # Bot starten
 @bot.event
 async def on_ready():
-    from prayer_times import gebetszeiten
-    bot.tree.add_command(gebetszeiten)
-
     await bot.tree.sync()  # Slash Commands mit Discord synchronisieren
-    
     bot.add_view(AgeDropdownView())
     bot.add_view(CityDropdownView())
     bot.add_view(SchoolDropdownView())
     bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
 
-bot.run(os.getenv("BOT_TOKEN"))
+if __name__ == "__main__":
+    load_dotenv()
+    
+    from prayer_times import gebetszeiten
+    bot.tree.add_commad(gebetszeiten)
 
+    bot.run(os.getenv("BOT_TOKEN"))
