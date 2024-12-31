@@ -701,14 +701,15 @@ async def sheikh_kurse(interaction: discord.Interaction):
 # Bot starten
 @bot.event
 async def on_ready():
-    from prayer_times import gebetszeiten
-    bot.tree.add_commad(gebetszeiten)
     await bot.tree.sync()  # Slash Commands mit Discord synchronisieren
     bot.add_view(AgeDropdownView())
     bot.add_view(CityDropdownView())
     bot.add_view(SchoolDropdownView())
     bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
+
+from prayer_times import gebetszeiten
+bot.tree.add_commad(gebetszeiten)
 
 bot.run(os.getenv("BOT_TOKEN"))
 

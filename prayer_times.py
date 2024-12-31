@@ -4,9 +4,6 @@ from datetime import datetime
 from main import bot
 import requests
 
-intents = discord.Intents.default()
-intents.guilds = True  # Für Guild-Informationen
-
 @bot.tree.command(name="gebetszeiten", description="Zeigt die Gebetszeiten für eine bestimmte Stadt an.")
 @app_commands.describe(stadt="Name der Stadt", öffentlich="Leer lassen für privat, true für öffentlich")
 async def gebetszeiten(interaction: discord.Interaction, stadt: str, öffentlich: bool = False):
