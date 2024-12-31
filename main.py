@@ -1,5 +1,4 @@
 import discord
-from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from datetime import datetime
@@ -14,7 +13,6 @@ load_dotenv()
 intents = discord.Intents.default()
 intents.guilds = True  # Für Guild-Informationen
 bot = commands.Bot(command_prefix=None, intents=intents)
-tree = discord.app_commands.CommandTree(bot)
 
 # Globale Definition von ALLOWED_ROLES
 SCHWESTER_ROLE = "Schwester"
@@ -335,7 +333,7 @@ class BildungsrollenDropdownView(discord.ui.View):
 
 
 # Slash Command zum Posten der Dropdown-Menüs
-@tree.command(name="setup_roles",
+@bot.tree.command(name="setup_roles",
               description="Postet die Dropdown-Menüs für die Rollenwahl")
 async def setup_roles(interaction: discord.Interaction):
     await interaction.response.send_message("Erstelle Rollen-Auswahl...")
@@ -386,7 +384,7 @@ ALLOWED_SCHWESTER_ROLES = ["Owner", "Admin+", "Admin", "Admina"]
 ALLOWED_BRUDER_ROLES = ["Owner", "Admin+", "Admin"]
 
 # Slash-Command: verify-schwester
-@tree.command(name="verify-schwester", 
+@bot.tree.command(name="verify-schwester", 
               description="Weist einem Benutzer die Rolle 'Schwester' zu.")
 async def verify_schwester(interaction: discord.Interaction, user: discord.Member):
     # Berechtigungen prüfen
@@ -429,7 +427,7 @@ async def verify_schwester(interaction: discord.Interaction, user: discord.Membe
         )
 
 # Slash-Command: verify-bruder
-@tree.command(name="verify-bruder", 
+@bot.tree.command(name="verify-bruder", 
               description="Weist einem Benutzer die Rolle 'Bruder' zu.")
 async def verify_bruder(interaction: discord.Interaction, user: discord.Member):
     # Berechtigungen prüfen
@@ -472,7 +470,7 @@ async def verify_bruder(interaction: discord.Interaction, user: discord.Member):
         )
 
 # Slash Command zum Hinzufügen eines Nutzers zu einem Thread
-@tree.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
+@bot.tree.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
 async def ticket_add(interaction: discord.Interaction, user: discord.Member):  # Ändere den Typ zu str
     # Berechtigungen prüfen
     allowed_roles = ["Owner", "Admin", "Mod"]
@@ -589,7 +587,7 @@ class VerificationButtons(discord.ui.View):
 
 
 # Setup-Verification-Befehl
-@tree.command(name="setup_verification", description="Richtet die Verifizierung mit Buttons ein.")
+@bot.tree.command(name="setup_verification", description="Richtet die Verifizierung mit Buttons ein.")
 async def setup_verification(interaction: discord.Interaction):
     # Embed für Verifizierungstext
     embed = discord.Embed(
@@ -611,7 +609,7 @@ async def setup_verification(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed, view=VerificationButtons())
     await interaction.response.send_message("Verifizierung wurde eingerichtet!", ephemeral=True)
 
-@tree.command(name="sheikh-info", description="Informationen zu Sheikh Dr. Adnan Yusuf Husain")
+@bot.tree.command(name="sheikh-info", description="Informationen zu Sheikh Dr. Adnan Yusuf Husain")
 async def sheikh_info(interaction: discord.Interaction):
     embed = discord.Embed(
         title="Sheikh Dr. Adnan Yusuf Husain",
@@ -652,7 +650,7 @@ async def sheikh_info(interaction: discord.Interaction):
 
     await interaction.response.send_message(embed=embed)
 
-@tree.command(name="sheikh-kurse", description="Informationen zu den angebotenen Kursen vom Sheikh")
+@bot.tree.command(name="sheikh-kurse", description="Informationen zu den angebotenen Kursen vom Sheikh")
 async def sheikh_kurse(interaction: discord.Interaction):
     embed = discord.Embed(
         title="Sheikh Dr. Adnan Yusuf Husain - Kurse",
@@ -704,7 +702,7 @@ async def sheikh_kurse(interaction: discord.Interaction):
 # Bot starten
 @bot.event
 async def on_ready():
-    await tree.sync()  # Slash Commands mit Discord synchronisieren
+    await bot.tree.sync()  # Slash Commands mit Discord synchronisieren
     bot.add_view(AgeDropdownView())
     bot.add_view(CityDropdownView())
     bot.add_view(SchoolDropdownView())
