@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from datetime import datetime
-from prayer_times import gebetszeiten
 import requests
 
 import os
@@ -702,6 +701,8 @@ async def sheikh_kurse(interaction: discord.Interaction):
 # Bot starten
 @bot.event
 async def on_ready():
+    from prayer_times import gebetszeiten
+    bot.tree.add_commad(gebetszeiten)
     await bot.tree.sync()  # Slash Commands mit Discord synchronisieren
     bot.add_view(AgeDropdownView())
     bot.add_view(CityDropdownView())
@@ -709,6 +710,5 @@ async def on_ready():
     bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
 
-bot.tree.add_commad(gebetszeiten)
 bot.run(os.getenv("BOT_TOKEN"))
 
