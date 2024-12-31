@@ -1,5 +1,6 @@
 import discord
 from discord import app_commands
+from discord.ext import commands
 from dotenv import load_dotenv
 from datetime import datetime
 from prayer_times import gebetszeiten
@@ -12,7 +13,7 @@ load_dotenv()
 # Intents aktivieren
 intents = discord.Intents.default()
 intents.guilds = True  # Für Guild-Informationen
-bot = discord.Client(intents=intents)
+bot = commands.Bot(intents=intents)
 tree = discord.app_commands.CommandTree(bot)
 
 # Globale Definition von ALLOWED_ROLES
@@ -710,6 +711,6 @@ async def on_ready():
     bot.add_view(VerificationButtons())
     print(f"Bot ist online! Eingeloggt als {bot.user}")
 
-tree.add_commad(gebetszeiten)
+bot.tree.add_commad(gebetszeiten)
 bot.run(os.getenv("BOT_TOKEN"))
 
