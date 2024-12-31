@@ -1,7 +1,6 @@
 import discord
 from discord import app_commands
 from datetime import datetime
-from main import bot
 import requests
 
 @app_commands.command(name="gebetszeiten", description="Zeigt die Gebetszeiten für eine bestimmte Stadt an.")
@@ -28,7 +27,7 @@ async def gebetszeiten(interaction: discord.Interaction, stadt: str, öffentlich
 
 def get_prayer_times(stadt):
     current_date = datetime.now().strftime("%d-%m-%Y")
-    url = f'http://api.aladhan.com/v1/timingsByCity/{current_date}?city={stadt}&country=DE&method=99&fajr_angle=13.8&isha_angle=15'
+    url = f'https://api.aladhan.com/v1/timingsByCity/{current_date}?city={stadt}&country=DE&method=99&fajr_angle=13.8&isha_angle=15'
 
     try:
         response = requests.get(url)
