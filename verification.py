@@ -189,3 +189,43 @@ async def setup_verification(interaction: discord.Interaction):
     # Nachricht mit Buttons senden
     await interaction.channel.send(embed=embed, view=VerificationButtons())
     await interaction.response.send_message("Verifizierung wurde eingerichtet!", ephemeral=True)
+
+# Slash Command zum Hinzufügen eines Nutzers zu einem Thread
+@app_commands.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
+async def ticket_add(interaction: discord.Interaction, user: discord.Member):  # Ändere den Typ zu str
+    # Berechtigungen prüfen
+    allowed_roles = ["Owner", "Admin", "Mod"]
+    executor_roles = [role.name for role in interaction.user.roles]
+    if not any(role in allowed_roles for role in executor_roles):
+        await interaction.response.send_message(
+            "Du hast keine Berechtigung, diesen Befehl auszuführen.", ephemeral=True
+        )
+        return
+
+    # Kanal prüfen
+    channel = interaction.channel
+    if not isinstance(channel, (discord.TextChannel, discord.Thread)):
+        await interaction.response.send_message(
+            "Dieser Befehl kann nur in Textkanälen oder Threads verwendet werden.", ephemeral=True
+        )
+        return
+
+    # Benutzer zu einem Kanal/Thread hinzufügen
+    try:
+        # Rechte setzen: Nachrichten lesen, senden und Historie einsehen
+        await channel.set_permissions(user, 
+            read_messages=True, 
+            send_messages=True, 
+            read_message_history=True
+        )
+        await interaction.response.send_message(
+            f"{user.mention} wurde erfolgreich zu {channel.mention} hinzugefügt!"
+        )
+    except discord.Forbidden:
+        await interaction.response.send_message(
+            "Ich habe nicht die Berechtigung, diesen Benutzer hinzuzufügen.", ephemeral=True
+        )
+    except Exception as e:
+        await interaction.response.send_message(
+            f"Ein Fehler ist aufgetreten: {e}", ephemeral=True
+        )
