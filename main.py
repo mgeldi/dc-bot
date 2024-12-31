@@ -13,7 +13,7 @@ load_dotenv()
 # Intents aktivieren
 intents = discord.Intents.default()
 intents.guilds = True  # Für Guild-Informationen
-bot = commands.Bot(intents=intents)
+bot = commands.Bot(command_prefix=None, intents=intents)
 tree = discord.app_commands.CommandTree(bot)
 
 # Globale Definition von ALLOWED_ROLES
