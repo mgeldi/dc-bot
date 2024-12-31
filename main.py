@@ -8,7 +8,7 @@ import os
 # Intents aktivieren
 intents = discord.Intents.default()
 intents.guilds = True  # Für Guild-Informationen
-bot = commands.Bot(command_prefix=None, intents=intents)
+bot = commands.Bot(command_prefix="/", intents=intents)
 
 # Bot starten
 @bot.event
