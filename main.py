@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from datetime import datetime
-from prayer_times import gebetszeiten
 import requests
 import os
 
@@ -708,7 +707,7 @@ async def on_ready():
 
 if __name__ == "__main__":
     load_dotenv()
-
+    from prayer_times import gebetszeiten
     bot.tree.add_command(gebetszeiten)
 
     bot.run(os.getenv("BOT_TOKEN"))
