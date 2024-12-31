@@ -708,8 +708,8 @@ async def on_ready():
 
 if __name__ == "__main__":
     load_dotenv()
-    
+
     from prayer_times import gebetszeiten
-    bot.tree.add_commad(gebetszeiten)
+    bot.tree.add_command(gebetszeiten)
 
     bot.run(os.getenv("BOT_TOKEN"))
