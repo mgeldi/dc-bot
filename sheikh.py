@@ -1,8 +1,18 @@
 import discord
+from datetime import datetime
 from discord import app_commands
 
 @app_commands.command(name="sheikh-info", description="Informationen zu Sheikh Dr. Adnan Yusuf Husain")
 async def sheikh_info(interaction: discord.Interaction):
+    # Geburtsdatum des Sheikh
+    birth_date = datetime(1986, 1, 1)
+
+    # Aktuelles Datum
+    current_date = datetime.now()
+
+    # Berechnung des Alters
+    sheikh_age = current_date.year - birth_date.year - ((current_date.month, current_date.day) < (birth_date.month, birth_date.day))
+
     embed = discord.Embed(
         title="Sheikh Dr. Adnan Yusuf Husain",
         description="Hier einige Informationen über den Sheikh:",
@@ -10,9 +20,9 @@ async def sheikh_info(interaction: discord.Interaction):
     )
 
     embed.add_field(
-        name="Biografie",
+        name="📖 Biografie",
         value=(
-            "• Der Sheikh ist 38 Jahre alt und begann 2006 sein Studium am Sprachinstitut der Islamischen Universität von Madinah.\n"
+            f"• Der Sheikh ist {sheikh_age} Jahre alt und begann 2006 sein Studium am Sprachinstitut der Islamischen Universität von Madinah.\n"
             "• 2013 schloss er sein Bachelorstudium in Schari'a an derselben Universität ab.\n"
             "• 2016 erlangte er den Master in Islamwissenschaften mit Schwerpunkt \"Meinungsverschiedenheiten in den Wissenschaften der Schari'a\" an der Ibn-Tofail-Universität in Marokko.\n"
             "• Seine Doktorarbeit im Bereich \"Tafsir\" schloss er 2024 ab.\n"
@@ -20,36 +30,38 @@ async def sheikh_info(interaction: discord.Interaction):
         inline=False
     )
 
+    # Erfahrung & Bildung - Fokus auf didaktische und berufliche Expertise
     embed.add_field(
-        name="Erfahrung & Bildung",
+        name="🎓 Erfahrung & Fachgebiete",
         value=(
-            "• 20 Jahre Erfahrung im Erlernen und Lehren von Arabisch als Fremdsprache.\n"
-            "• Bachelor, Master und Doktorat an renommierten arabischen Universitäten.\n"
-            "• Doktor in Tafsir.\n"
+            "• Über 20 Jahre Erfahrung im Unterrichten von Arabisch als Fremdsprache, sowohl in akademischen als auch in nicht-akademischen Kontexten.\n"
+            "• Er entwickelt und unterrichtet maßgeschneiderte Arabischkurse, die auf individuelle Bedürfnisse der Lernenden abgestimmt sind.\n"
+            "• Islamische Fachgebiete: Tafsir, Schari'a, arabische Linguistik und die Lehre von Meinungsverschiedenheiten in den islamischen Wissenschaften.\n"
         ),
         inline=False
     )
 
     embed.add_field(
-        name="Zukünftige Aktivitäten",
+        name="🗓️ Aktuelle Aktivitäten",
         value=(
-            "• Der Sheikh wird voraussichtlich ab Mitte Januar 2025 regelmäßig auf diesem Server aktiv sein.\n"
-            "• Geplant sind tiefgehende Vorträge zu verschiedenen islamischen Themengebieten."
+            "• Wir freuen uns, euch mitzuteilen, dass unser geschätzter Sheikh am **18. Januar 2025** mit seinem ersten Vortrag beginnen wird.\n"
+            "• Ab diesem Zeitpunkt finden die Vorträge bzw. Unterrichte regelmäßig **jeden Samstag um 21:00 Uhr** statt.\n"
+            "• In den Vorträgen habt ihr selbstverständlich die Möglichkeit, live Fragen zu stellen und direkt mit dem Sheikh zu interagieren."
         ),
         inline=False
     )
 
     embed.add_field(
-        name="Relevante Links",
+        name="🔗 Relevante Links",
         value=(
-            "[Website des Sheikh mit kostenlosen Kursen](https://www.islamwissenschaften.com/)\n"
-            "[Arabisch Kurs auf Skool mit individuellem Lehrplan](https://www.skool.com/lerne-arabisch/about)\n"
-            "[Telegram Gruppe des Sheikhs](https://t.me/adnanyh)"
+            "• [Website des Sheikh mit kostenlosen Kursen](https://www.islamwissenschaften.com/)\n"
+            "• [Arabisch-Kurs auf Skool mit individuellem Lehrplan](https://www.skool.com/lerne-arabisch/about)\n"
+            "• [Telegram Gruppe des Sheikhs](https://t.me/adnanyh)"
         ),
         inline=False
     )
 
-    embed.set_footer(text="Wir freuen uns, den Sheikh auf unserem Server begrüßen zu dürfen!")
+    embed.set_footer(text="Wir freuen uns, den Sheikh auf unserem Server begrüßen zu dürfen! Seih live bei seinen Vorträgen dabei!")
     embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1323708229858889738/sheikh.jpg?ex=67757edb&is=67742d5b&hm=40288fc45a447f4786b0e11a37a53e08fb2ad03e7db4dd8d2d55d5769ad176a1&=&format=webp&width=1530&height=1355")
 
     await interaction.response.send_message(embed=embed)
