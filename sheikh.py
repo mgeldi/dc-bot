@@ -10,6 +10,19 @@ async def sheikh_info(interaction: discord.Interaction):
     )
 
     embed.add_field(
+        name="Biografie",
+        value=(
+            "Dr. Adnan Yusuf Husain begann sein Studium im Jahr 2006 am Sprachinstitut der Islamischen Universität von Madinah, Saudi-Arabien. \n"
+            "Im Jahr 2013 schloss er an derselben Universität sein Bachelorstudium an der Fakultät für Schari'a erfolgreich ab. \n"
+            "Im Jahr 2016 erlangte er seinen Masterabschluss in Islamwissenschaften im Fachbereich \"Meinungsverschiedenheiten in den Wissenschaften der Schari'a\". \n"
+            "Seine Masterarbeit im Bereich \"Usul al-Fiqh\" verfasste er an der Ibn-Tofail-Universität in Kénitra, Marokko. \n\n"
+            "Seit Dezember 2024 trägt er den Doktortitel im selben Fachbereich. Seine Doktorarbeit befasste sich mit dem Thema \"Tafsir\". \n\n"
+            "Dr. Adnan Yusuf Husain ist 38 Jahre alt."
+        ),
+        inline=False
+    )
+
+    embed.add_field(
         name="Erfahrung & Bildung",
         value=(
             "• 20 Jahre Erfahrung im Erlernen und Lehren von Arabisch als Fremdsprache.\n"
@@ -49,19 +62,6 @@ async def sheikh_kurse(interaction: discord.Interaction):
         title="Sheikh Dr. Adnan Yusuf Husain - Kurse",
         description="Hier findest du eine Übersicht über die Kurse, die vom Sheikh angeboten werden:",
         color=discord.Color.green()
-    )
-
-    # Biografie hinzufügen
-    embed.add_field(
-        name="Über Sheikh Dr. Adnan Yusuf Husain",
-        value=(
-            "Dr. Adnan Yusuf Husain begann sein Studium im Jahr 2006 am Sprachinstitut der Islamischen Universität von Madinah, Saudi-Arabien.\n"
-            "• 2013: Abschluss des Bachelor-Studiums an der Fakultät für Shari'ah.\n"
-            "• 2016: Master in Islamwissenschaften im Fachbereich 'Meinungsverschiedenheiten in den Wissenschaften der Shari'ah' an der Ibn Tofail Universität in Kénitra, Marokko.\n"
-            "  \- Thesis-Thema: Usul al-Fiqh.\n"
-            "• 2024: Promotion im Fachbereich 'Meinungsverschiedenheiten in den Wissenschaften der Shari'ah' mit einer Doktorarbeit zum Thema Tafsir."
-        ),
-        inline=False
     )
 
     embed.add_field(
