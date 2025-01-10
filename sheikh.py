@@ -51,6 +51,19 @@ async def sheikh_kurse(interaction: discord.Interaction):
         color=discord.Color.green()
     )
 
+    # Biografie hinzufügen
+    embed.add_field(
+        name="Über Sheikh Dr. Adnan Yusuf Husain",
+        value=(
+            "Dr. Adnan Yusuf Husain begann sein Studium im Jahr 2006 am Sprachinstitut der Islamischen Universität von Madinah, Saudi-Arabien.\n"
+            "• 2013: Abschluss des Bachelor-Studiums an der Fakultät für Shari'ah.\n"
+            "• 2016: Master in Islamwissenschaften im Fachbereich 'Meinungsverschiedenheiten in den Wissenschaften der Shari'ah' an der Ibn Tofail Universität in Kénitra, Marokko.\n"
+            "  \- Thesis-Thema: Usul al-Fiqh.\n"
+            "• 2024: Promotion im Fachbereich 'Meinungsverschiedenheiten in den Wissenschaften der Shari'ah' mit einer Doktorarbeit zum Thema Tafsir."
+        ),
+        inline=False
+    )
+
     embed.add_field(
         name="Kostenlose Kurse - islamwissenschaften.com",
         value=(
