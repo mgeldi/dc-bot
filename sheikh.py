@@ -5,7 +5,7 @@ from discord import app_commands
 @app_commands.command(name="sheikh-info", description="Informationen zu Sheikh Dr. Adnan Yusuf Husain")
 async def sheikh_info(interaction: discord.Interaction):
     # Geburtsdatum des Sheikh
-    birth_date = datetime(1986, 1, 1)
+    birth_date = datetime(1986, 12, 30)
 
     # Aktuelles Datum
     current_date = datetime.now()
