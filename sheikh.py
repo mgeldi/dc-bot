@@ -45,7 +45,7 @@ async def sheikh_info(interaction: discord.Interaction):
         name="🗓️ Aktuelle Aktivitäten",
         value=(
             "• Wir freuen uns, euch mitzuteilen, dass unser geschätzter Sheikh am **18. Januar 2025** mit seinem ersten Vortrag beginnen wird.\n"
-            "• Ab diesem Zeitpunkt finden die Vorträge bzw. Unterrichte regelmäßig **jeden Samstag um 21:00 Uhr** statt.\n"
+            "• Ab diesem Zeitpunkt finden die Vorträge bzw. Unterrichte regelmäßig **jeden Sonntag um 11:00 Uhr** statt.\n"
             "• In den Vorträgen habt ihr selbstverständlich die Möglichkeit, live Fragen zu stellen und direkt mit dem Sheikh zu interagieren."
         ),
         inline=False
