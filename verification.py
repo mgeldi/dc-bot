@@ -194,7 +194,7 @@ async def setup_verification(interaction: discord.Interaction):
 @app_commands.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
 async def ticket_add(interaction: discord.Interaction, user: discord.Member):  # Ändere den Typ zu str
     # Berechtigungen prüfen
-    allowed_roles = ["Owner", "Admin", "Mod"]
+    allowed_roles = ["Owner", "Admin+", "Admin", "Server Architekt", "Mod"]
     executor_roles = [role.name for role in interaction.user.roles]
     if not any(role in allowed_roles for role in executor_roles):
         await interaction.response.send_message(
