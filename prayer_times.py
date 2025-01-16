@@ -27,7 +27,7 @@ async def gebetszeiten(interaction: discord.Interaction, stadt: str, öffentlich
 
 def get_prayer_times(stadt):
     current_date = datetime.now().strftime("%d-%m-%Y")
-    url = f'https://api.aladhan.com/v1/timingsByCity/{current_date}?city={stadt}&country=DE&method=99&fajr_angle=13.8&isha_angle=14'
+    url = f'https://api.aladhan.com/v1/timingsByCity/{current_date}?city={stadt}&country=DE&method=99&methodSettings=13.8,null,14'
 
     try:
         response = requests.get(url)
