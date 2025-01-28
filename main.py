@@ -32,6 +32,7 @@ if __name__ == "__main__":
     from sheikh import sheikh_info, sheikh_kurse
     from verification import verify_bruder, verify_schwester, setup_verification, ticket_add
     from roles import setup_roles
+    from nasiha import nasiha, nasiha_close
 
     bot.tree.add_command(gebetszeiten)
     bot.tree.add_command(sheikh_info)
@@ -41,5 +42,7 @@ if __name__ == "__main__":
     bot.tree.add_command(setup_verification)
     bot.tree.add_command(ticket_add)
     bot.tree.add_command(setup_roles)
+    bot.tree.add_command(nasiha)
+    bot.tree.add_command(nasiha_close)
 
     bot.run(os.getenv("BOT_TOKEN"))
