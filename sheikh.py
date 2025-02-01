@@ -62,7 +62,7 @@ async def sheikh_info(interaction: discord.Interaction):
     )
 
     embed.set_footer(text="Wir freuen uns, den Sheikh auf unserem Server begrüßen zu dürfen! Seih live bei seinen Vorträgen dabei!")
-    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1323708229858889738/sheikh.jpg?ex=67757edb&is=67742d5b&hm=40288fc45a447f4786b0e11a37a53e08fb2ad03e7db4dd8d2d55d5769ad176a1&=&format=webp&width=1530&height=1355")
+    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1335345553197895732/1335398021214765136/sheikh.jpg?ex=67a005d2&is=679eb452&hm=c0b0d5d664168cb8488659bb096e6de3392755dcd5581c7c412e9a2175396a98&=&format=webp&width=1530&height=1355")
 
     await interaction.response.send_message(embed=embed)
 
@@ -111,6 +111,6 @@ async def sheikh_kurse(interaction: discord.Interaction):
     )
 
     embed.set_footer(text="Nutze die Gelegenheit, dein Wissen zu erweitern und in die islamischen Wissenschaften einzutauchen!")
-    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1323398851872428143/islamwissenschaften.png?ex=67745eb9&is=67730d39&hm=02ad3e5ffbd39cb64c6ffb1750f63813142f63fa52c4bf4cc6a2a71051fe91bf&=&format=webp&quality=lossless&width=375&height=375")
+    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1335345553197895732/1335398127242576005/islamwissenschaften.png?ex=67a005ec&is=679eb46c&hm=95e1f010320158b5fd6fa2fb4a55474e2451335b68fb1024cdbdc995e8f99ea0&=&format=webp&quality=lossless&width=375&height=375")
 
     await interaction.response.send_message(embed=embed)
