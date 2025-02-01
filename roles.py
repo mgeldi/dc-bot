@@ -27,8 +27,8 @@ class AgeDropdown(discord.ui.Select):
         options = [
             discord.SelectOption(label="15-20", value="15-20"),
             discord.SelectOption(label="21-25", value="21-25"),
-            discord.SelectOption(label="25-30", value="25-30"),
-            discord.SelectOption(label="30-35", value="30-35"),
+            discord.SelectOption(label="26-30", value="26-30"),
+            discord.SelectOption(label="31-35", value="31-35"),
             discord.SelectOption(label="36-40", value="36-40"),
             discord.SelectOption(label="40+", value="40+"),
         ]
@@ -122,7 +122,7 @@ class CityDropdown(discord.ui.Select):
             discord.SelectOption(label="Zürich", value="Zürich", emoji="🇨🇭"),
         ]
 
-        super().__init__(placeholder="Wähle deine Stadt aus",
+        super().__init__(placeholder="Wähle deinen Ort aus",
                          min_values=0,  # Abwählbar
                          max_values=1,
                          options=options,
@@ -243,7 +243,6 @@ class BildungsrollenDropdown(discord.ui.Select):
     def __init__(self):
         options = [
             discord.SelectOption(label="Quran", value="Quran", emoji="🕋"),
-            discord.SelectOption(label="Unterrichte", value="Unterrichte", emoji="🖋️"),
             discord.SelectOption(label="Buchvorlesungen", value="Buchvorlesungen", emoji="📖"),
             discord.SelectOption(label="Vorträge", value="Vorträge", emoji="📚"),
         ]
