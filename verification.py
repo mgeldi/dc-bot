@@ -115,7 +115,7 @@ class VerificationButtons(discord.ui.View):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslim = discord.utils.get(interaction.guild.roles, name="Unverifiziert M")
         guild = interaction.guild
-        target_channel = discord.utils.get(guild.channels, id=1314112301162430464)
+        target_channel = discord.utils.get(guild.channels, id=1335335933373059163)
 
 
         if role_unverifiziert in interaction.user.roles:
@@ -134,7 +134,7 @@ class VerificationButtons(discord.ui.View):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslima = discord.utils.get(interaction.guild.roles, name="Unverifiziert W")
         guild = interaction.guild
-        target_channel = discord.utils.get(guild.channels, id=1314112392594194482)
+        target_channel = discord.utils.get(guild.channels, id=1335337143136157696)
 
         if role_unverifiziert in interaction.user.roles:
             await interaction.user.add_roles(role_muslima)
@@ -152,7 +152,7 @@ class VerificationButtons(discord.ui.View):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_interessiert = discord.utils.get(interaction.guild.roles, name="Interessiert")
         # Der Channel, in dem der Benutzer fortfahren soll
-        channel = interaction.guild.get_channel(1314117160465076264)
+        channel = interaction.guild.get_channel(1335340894660071524)
 
         if role_unverifiziert in interaction.user.roles:
             # Rolle "Interessiert" hinzufügen und "Unverifiziert" entfernen
