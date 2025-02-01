@@ -191,7 +191,7 @@ async def setup_verification(interaction: discord.Interaction):
         color=discord.Color.blue()
     )
     
-    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1316082550493548614/1321534361933316106/093e98cf90f519920d4569e9d0b69d33813821d55aab1a92b434752e2b5c33f4.png?ex=676d9648&is=676c44c8&hm=1688ebeab6de4bde4f5476cdc4f0392e8cb3929dac58e831584a4ee6a88cac71&=&format=webp&quality=lossless&width=1361&height=1361")
+    embed.set_thumbnail(url="https://media.discordapp.net/attachments/1335345553197895732/1335346062004588544/Amanah_Logo_Animation.gif?ex=679fd56e&is=679e83ee&hm=018d10ee799f1c8a21de29341f1f0e546c566b2a45d2fd19d7f5ac08b9299b0a&=&width=1355&height=1355")
 
     # Nachricht mit Buttons senden
     await interaction.channel.send(embed=embed, view=VerificationButtons())
