@@ -4,8 +4,6 @@ from discord import app_commands
 SCHWESTER_ROLE = "Schwester"
 BRUDER_ROLE = "Bruder"
 MITGLIED_ROLE = "Mitglied"
-ALLOWED_SCHWESTER_ROLES = ["Owner", "Admin+", "Admin", "Admina"]
-ALLOWED_BRUDER_ROLES = ["Owner", "Admin+", "Admin"]
 ALLOWED_VERIFIER_ROLES = ["Verifizierer", "Verifiziererin"]
 
 # Slash-Command: verify-schwester

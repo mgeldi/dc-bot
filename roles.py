@@ -246,7 +246,6 @@ class BildungsrollenDropdown(discord.ui.Select):
             discord.SelectOption(label="Unterrichte", value="Unterrichte", emoji="🖋️"),
             discord.SelectOption(label="Buchvorlesungen", value="Buchvorlesungen", emoji="📖"),
             discord.SelectOption(label="Vorträge", value="Vorträge", emoji="📚"),
-            discord.SelectOption(label="Podcasts", value="Podcasts", emoji="🎙️"),
         ]
         super().__init__(placeholder="Wähle deine Bildungsrollen aus",
                          min_values=0,
