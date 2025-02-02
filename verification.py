@@ -115,7 +115,6 @@ class VerificationButtons(discord.ui.View):
         guild = interaction.guild
         target_channel = discord.utils.get(guild.channels, id=1335335933373059163)
 
-
         if role_unverifiziert in interaction.user.roles:
             await interaction.user.add_roles(role_muslim)
             await interaction.response.send_message(
@@ -199,7 +198,7 @@ async def setup_verification(interaction: discord.Interaction):
 @app_commands.command(name="ticket-add", description="Fügt einen Benutzer zu einem Thread hinzu.")
 async def ticket_add(interaction: discord.Interaction, user: discord.Member):  # Ändere den Typ zu str
     # Berechtigungen prüfen
-    allowed_roles = ["Owner", "Admin+", "Admin", "Admina", "Server Architekt", "Mod"]
+    allowed_roles = ["Server Manager", "Admin+", "Admin", "Admina", "Server Architekt", "Mod"]
     executor_roles = [role.name for role in interaction.user.roles]
     if not any(role in allowed_roles for role in executor_roles):
         await interaction.response.send_message(

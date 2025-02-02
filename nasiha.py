@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 
 CATEGORY_ID = 1335398485091942550  # ID der Nasiha-Kategorie
-ALLOWED_ROLES = ["Owner", "Admin+", "Admin", "Admina", "Server Architekt", "Mod", "Supporter"]
+ALLOWED_ROLES = ["Server Manager", "Admin+", "Admin", "Admina", "Server Architekt", "Mod", "Supporter"]
 
 
 def user_has_allowed_role(interaction: discord.Interaction) -> bool:
