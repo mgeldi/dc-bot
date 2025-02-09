@@ -113,7 +113,7 @@ class VerificationButtons(discord.ui.View):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslim = discord.utils.get(interaction.guild.roles, name="Unverifiziert M")
         guild = interaction.guild
-        target_channel = discord.utils.get(guild.channels, id=1335335933373059163)
+        target_channel = discord.utils.get(guild.channels, id=1335401373617094808)
 
         if role_unverifiziert in interaction.user.roles:
             await interaction.user.add_roles(role_muslim)
@@ -131,7 +131,7 @@ class VerificationButtons(discord.ui.View):
         role_unverifiziert = discord.utils.get(interaction.guild.roles, name="Unverifiziert")
         role_muslima = discord.utils.get(interaction.guild.roles, name="Unverifiziert W")
         guild = interaction.guild
-        target_channel = discord.utils.get(guild.channels, id=1335337143136157696)
+        target_channel = discord.utils.get(guild.channels, id=1335401881656361052)
 
         if role_unverifiziert in interaction.user.roles:
             await interaction.user.add_roles(role_muslima)
