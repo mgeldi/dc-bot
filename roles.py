@@ -310,17 +310,17 @@ async def setup_roles(interaction: discord.Interaction):
                               color=discord.Color.blue())
     embed_age.set_image(
         url=
-        "https://media.discordapp.net/attachments/1316082550493548614/1320532982422835272/image-5.png?ex=676bebed&is=676a9a6d&hm=c3c3f21935d4969517c71d492272aa1619b0e2ec5e9c6c2b0f92f397bb6108fe&=&format=webp&quality=lossless&width=1440&height=808"
+        "https://media.discordapp.net/attachments/1335345553197895732/1336232038180716557/11.png?ex=67a9a60f&is=67a8548f&hm=485fe6090433de2cbd64c6203d4eabbbf749d62cb60fd30519424bbc021d502c&=&format=webp&quality=lossless&width=1440&height=810"
     )  # Thumbnail hinzufügen
     await interaction.channel.send(embed=embed_age, view=AgeDropdownView())
 
     # Städte
     embed_city = discord.Embed(
-        title="🌆 Wähle dein Bundesland oder deine Stadt",
+        title="🌆 Wähle deinen Ort aus",
         color=discord.Color.green())
     embed_city.set_image(
         url=
-        "https://media.discordapp.net/attachments/1316082550493548614/1320475707343896606/image.png?ex=676bb695&is=676a6515&hm=c19f2d2cfc26ea64014cb033af0d063f4c123169671da7d057b5ca5ffab6d49a&=&format=webp&quality=lossless&width=1440&height=810"
+        "https://media.discordapp.net/attachments/1335345553197895732/1337067644045754422/Location.png?ex=67a96487&is=67a81307&hm=d6116ee95d796e9212836c799cc8eda1d91f7f340ba961af8160c34ab955fd38&=&format=webp&quality=lossless&width=1440&height=810"
     )
     await interaction.channel.send(embed=embed_city, view=CityDropdownView())
 
@@ -329,7 +329,7 @@ async def setup_roles(interaction: discord.Interaction):
                                  color=discord.Color.gold())
     embed_school.set_image(
         url=
-        "https://media.discordapp.net/attachments/1316082550493548614/1320532983148580864/image-4.png?ex=676bebed&is=676a9a6d&hm=0c614303d4812668315d296090abd00f8953721dc88420c1ad483057fb28be23&=&format=webp&quality=lossless&width=1440&height=808"
+        "https://media.discordapp.net/attachments/1335345553197895732/1336232037706633227/9.png?ex=67a9a60f&is=67a8548f&hm=6cd42a8f86874e2b5cd145daea113a4a5898a0480d2287a28c3f4bddaa2871dd&=&format=webp&quality=lossless&width=1440&height=810"
     )
     await interaction.channel.send(embed=embed_school,
                                    view=SchoolDropdownView())
@@ -339,7 +339,7 @@ async def setup_roles(interaction: discord.Interaction):
                                  color=discord.Color.red())
     embed_school.set_image(
         url=
-        "https://media.discordapp.net/attachments/1316082550493548614/1321257663987716156/image.png?ex=676d3d56&is=676bebd6&hm=f0963f170dd25231a2ca725c3d87cd9481870d8c42522f4a07c5024ea9af5e15&=&format=webp&quality=lossless&width=1443&height=813"
+        "https://media.discordapp.net/attachments/1335345553197895732/1336232037954228256/10.png?ex=67a9a60f&is=67a8548f&hm=9aabaaa2cfeb0d57c881677906ee14b6771f1065afd381b6f2cac4d9cfcce0f5&=&format=webp&quality=lossless&width=1440&height=810"
     )
     await interaction.channel.send(embed=embed_school,
                                    view=BildungsrollenDropdownView())
